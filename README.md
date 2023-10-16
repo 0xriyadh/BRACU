@@ -1,1 +1,1 @@
-# All Courses of BRACU
+# BRACU Courses
