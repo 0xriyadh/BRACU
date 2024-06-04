@@ -1,5 +1,5 @@
-from CSE423.lab01.lecture.OpenGL.raw.GL.VERSION.GL_1_0 import *
-from CSE423.lab01.lecture.OpenGL.raw.GLUT import *
+from OpenGL.GL import *
+from OpenGL.GLUT import *
 from OpenGL.GLU import *
 
 

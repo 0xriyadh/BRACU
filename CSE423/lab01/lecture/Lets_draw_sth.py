@@ -8,7 +8,7 @@ W_Width, W_Height = 500,500
 
 
 ballx = bally = 0
-speed = 0.01
+speed = 1
 ball_size = 2
 create_new = False
 
