@@ -18,9 +18,23 @@ def iterate():
 
     # glMatrixMode(GL_PROJECTION) sets the current matrix mode to GL_PROJECTION
     # This line tells OpenGL to start work1ing on the projection matrix, which is used to control how things we draw are shown on the screen, like setting up a camera view.
+    # This is like telling OpenGL, "I'm going to set up how the camera sees the scene." 
+    # It switches the context to focus on camera settings, specifically how to project the 3D world onto our 2D screen.
     glMatrixMode(GL_PROJECTION)
 
+    # glLoadIdentity replaces the current matrix with the identity matrix.
+    # This clears any previous settings on the projection. It's like resetting our camera to a default, neutral position with no zoom, tilt, or pan.
     glLoadIdentity()
+
+    # glOrtho Defines a 2D orthographic projection matrix
+    # An orthographic projection matrix is a way of representing three-dimensional objects in two dimensions without the effects of perspective. In simpler terms, it's a method to display 3D objects on a 2D screen where objects retain the same size and proportion regardless of their distance from the camera. This is different from perspective projection, where objects appear smaller as they get further away, mimicking how the human eye perceives depth.
+    """  
+        Simple Explanation (for glOrtho(0.0, 500, 0.0, 500, 0.0, 1.0)): 
+        This sets up a simple, flat view where:
+        - The x-coordinates of the scene will go from 0 to 500 on your screen.
+        - The y-coordinates will also go from 0 to 500.
+        - The z-coordinates (depth) are between 0.0 and 1.0, but for most 2D applications, this depth range isn't visually impactful.
+    """
     glOrtho(0.0, 500, 0.0, 500, 0.0, 1.0)
     glMatrixMode (GL_MODELVIEW)
     glLoadIdentity()
@@ -40,9 +54,7 @@ def showScreen():
     # Sets the current color to yellow (RGB: 1.0, 1.0, 0.0). All subsequent drawing operations will use this color until it's changed again.
     glColor3f(1.0, 1.0, 0.0)
     
-    # This is a placeholder comment indicating where drawing functions should be called. 
-    # Based on the comment, draw_points(250, 250) is called here to draw something at the specified coordinates.
-    # The specifics of draw_points are not shown, but it likely involves OpenGL commands to draw points or other primitives.
+    # This is where we call the drawing functions
     draw_points(250, 250)
     
     # Swaps the front and back buffers. In double-buffered rendering, drawing commands are applied to a back buffer while the front buffer is being displayed.
