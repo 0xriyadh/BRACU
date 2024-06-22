@@ -17,6 +17,7 @@ def iterate():
     # the area of the window where OpenGL will draw the graphics.
     glViewport(0, 0, 500, 500)
 
+    # glMatrixMode(GL_PROJECTION) used for setting up the camera view
     # glMatrixMode(GL_PROJECTION) sets the current matrix mode to GL_PROJECTION
     # This matrix controls how your scene is projected onto the screen (like setting up a camera lens)
     # This line tells OpenGL to start work1ing on the projection matrix, which is used to control how things we draw are shown on the screen, like setting up a camera view.
