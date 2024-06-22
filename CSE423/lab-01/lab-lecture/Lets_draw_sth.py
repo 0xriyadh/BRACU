@@ -4,7 +4,7 @@ from OpenGL.GLU import *
 
 import math
 
-W_Width, W_Height = 500,500
+W_Width, W_Height = 500, 500
 
 
 ballx = bally = 0
@@ -194,24 +194,43 @@ def init():
     glMatrixMode(GL_PROJECTION)
     #//initialize the matrix
     glLoadIdentity()
-    #//give PERSPECTIVE parameters
+
+    """  
+        sets up a perspective projection matrix that defines a viewing frustum. This projection transforms 3D coordinates into the 2D coordinates that you see on your screen, while maintaining a sense of depth. The function is typically used to simulate the perspective view that humans perceive in the real world, where objects appear smaller as they get further away from the viewer.
+
+        1. Field of View (FOV): The Field of View (FOV) is the extent of the observable world that is visible at any moment from a particular position. Imagine looking through a camera or binoculars; the FOV is how wide the scene you can see is. It's usually expressed in degrees. A larger FOV allows you to see a wider area but can make objects appear smaller and further away, while a smaller FOV focuses more narrowly on objects, making them appear larger and closer.
+        Example: If your FOV is 90 degrees, it means you can see 90 degrees wide in front of you, like looking through a wide-angle lens.
+
+        2. Aspect Ratio: The Aspect Ratio is the ratio of the width to the height of an image or screen. It determines the shape of the display or the images you see. Common aspect ratios include 16:9 for most modern TVs and monitors, and 4:3 for older TVs.
+        Example: If a screen has an aspect ratio of 16:9, for every 16 units of width, it has 9 units of height. This would make the screen noticeably wider than it is tall.
+
+        3. Near Clipping Plane: The Near Clipping Plane is the closest distance at which the camera starts rendering scenes. Anything closer than this distance will not be visible (it gets "clipped"). This helps in managing the rendering workload by not drawing objects too close to the viewer that might not be visible or might distort the view.
+        Example: If the near clipping plane is set at 1 meter, anything closer than 1 meter to the camera will not be shown in the rendered scene.
+        
+        4. Far Clipping Plane: The Far Clipping Plane is the farthest distance at which the camera stops rendering scenes. Objects beyond this distance will not be visible. This is used to optimize rendering by not drawing objects that are too far away to be seen clearly or are beyond the visible horizon of the scene.
+        Example: If the far clipping plane is set at 1000 meters, anything beyond 1000 meters from the camera will not appear in the view.
+    """
     gluPerspective(104,	1,	1,	1000.0)
-    # **(important)**aspect ratio that determines the field of view in the X direction (horizontally). The bigger this angle is, the more you can see of the world - but at the same time, the objects you can see will become smaller.
-    #//near distance
-    #//far distance
 
 
 glutInit()
 glutInitWindowSize(W_Width, W_Height)
 glutInitWindowPosition(0, 0)
-glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGB) #	//Depth, Double buffer, RGB color
 
-# glutCreateWindow("My OpenGL Program")
+"""  
+    GLUT_DEPTH: This flag tells OpenGL to create a depth buffer for the window. The depth buffer is used to determine which objects are in front of others, which is important for rendering 3D scenes correctly.
+
+    GLUT_DOUBLE: This flag tells OpenGL to create a double-buffered window. Double buffering is a technique used to prevent flickering in animations. Instead of drawing directly to the screen, OpenGL draws to an off-screen buffer. Once the frame is complete, it swaps the off-screen buffer with the on-screen buffer, making the new frame visible to the user.
+
+    GLUT_RGB: This flag tells OpenGL to create a window with a red, green, and blue color buffer. This is the most common color mode used in OpenGL.
+"""
+glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGB)
+
 wind = glutCreateWindow(b"OpenGL Coding Practice")
 init()
 
 glutDisplayFunc(display)	#display callback function
-glutIdleFunc(animate)	#what you want to do in the idle time (when no drawing is occuring)
+# glutIdleFunc(animate)	#what you want to do in the idle time (when no drawing is occuring)
 
 glutKeyboardFunc(keyboardListener)
 glutSpecialFunc(specialKeyListener)
