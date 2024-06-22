@@ -8,6 +8,7 @@ W_Width, W_Height = 700, 700
 rain_drops = []
 rain_direction = 0
 day_light = [0, 0, 0]
+opposite_day_light = [1, 1, 1]
 
 
 def convert_coordinate(x, y):
@@ -21,12 +22,14 @@ def draw_rain_drop(x, y):
     x, y = convert_coordinate(x, y)
     glPointSize(2)
     glBegin(GL_POINTS)
-    glColor3f(0, 0.7, 1)
+    glColor3f(*opposite_day_light)
     glVertex2f(x, y)
     glVertex2f(x, y + 1)
     glVertex2f(x, y + 2)
     glVertex2f(x, y + 3)
     glVertex2f(x, y + 4)
+    glVertex2f(x, y + 5)
+    glVertex2f(x, y + 6)
     glEnd()
 
 
@@ -153,17 +156,23 @@ def keyboardListener(key, x, y):
         if day_light[0] >= 1 and day_light[1] >= 1 and day_light[2] >= 1:
             print("Day Mode Activated")
             return
-        day_light[0] += 0.1
-        day_light[1] += 0.1
-        day_light[2] += 0.1
+        day_light[0] += 0.2
+        day_light[1] += 0.2
+        day_light[2] += 0.2
+        opposite_day_light[0] -= 0.2
+        opposite_day_light[1] -= 0.2
+        opposite_day_light[2] -= 0.2
         print("Day Light Increased", day_light)
     if key == b'n':
         if day_light[0] <= 0 and day_light[1] <= 0 and day_light[2] <= 0:
             print("Night Mode Activated") 
             return
-        day_light[0] -= 0.1
-        day_light[1] -= 0.1
-        day_light[2] -= 0.1
+        day_light[0] -= 0.2
+        day_light[1] -= 0.2
+        day_light[2] -= 0.2
+        opposite_day_light[0] += 0.2
+        opposite_day_light[1] += 0.2
+        opposite_day_light[2] += 0.2
         print("Day Light Decreased")
 
     glutPostRedisplay()
@@ -204,7 +213,7 @@ def animate():
     glutPostRedisplay()
     global rain_drops
     for i in range(len(rain_drops)):
-        rain_drops[i][1] += 4
+        rain_drops[i][1] += 6
         rain_drops[i][0] += rain_direction * 0.1
         if rain_drops[i][1] > 700:
             rain_drops[i][0] = random.randint(0, W_Width)
@@ -229,7 +238,7 @@ wind = glutCreateWindow(b"Rainfall House")
 init()
 glutDisplayFunc(display)  # display callback function
 
-for i in range(250):
+for i in range(300):
     x = random.randint(0, W_Width)
     y = random.randint(0, W_Height)
     rain_drops.append([x, y])
