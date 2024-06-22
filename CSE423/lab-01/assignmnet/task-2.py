@@ -64,6 +64,7 @@ def mouseListener(button, state, x, y):
     if button == GLUT_RIGHT_BUTTON:
         if state == GLUT_DOWN:
             points.append(new_point(x, y))
+            print("New Point Added at", x, y)
 
     glutPostRedisplay()
 
@@ -81,7 +82,6 @@ def display():
     gluLookAt(0, 0, 200,	0, 0, 0,	0, 1, 0)
     glMatrixMode(GL_MODELVIEW)
 
-    # ############################################################
     draw_points()
 
     glutSwapBuffers()
@@ -90,6 +90,14 @@ def display():
 def animate():
     # codes for any changes in Models, Camera
     glutPostRedisplay()
+    for point in points:
+        point[0] += point[3]
+        point[1] += point[4]
+
+        if point[0] >= W_Width or point[0] <= 0:
+            point[3] *= -1
+        if point[1] >= W_Height or point[1] <= 0:
+            point[4] *= -1
 
 
 def init():
