@@ -14,9 +14,11 @@ def iterate():
     # glViewport takes 4 parameters
     # 1. x,y: The x and y coordinates of the lower left corner of the viewport rectangle, in pixels.
     # 2. width, height: The width and height of the viewport rectangle, in pixels.
+    # the area of the window where OpenGL will draw the graphics.
     glViewport(0, 0, 500, 500)
 
     # glMatrixMode(GL_PROJECTION) sets the current matrix mode to GL_PROJECTION
+    # This matrix controls how your scene is projected onto the screen (like setting up a camera lens)
     # This line tells OpenGL to start work1ing on the projection matrix, which is used to control how things we draw are shown on the screen, like setting up a camera view.
     # This is like telling OpenGL, "I'm going to set up how the camera sees the scene." 
     # It switches the context to focus on camera settings, specifically how to project the 3D world onto our 2D screen.
@@ -26,6 +28,7 @@ def iterate():
     # This clears any previous settings on the projection. It's like resetting our camera to a default, neutral position with no zoom, tilt, or pan.
     glLoadIdentity()
 
+    # glOrtho is a transformation function that sets up a 2D orthographic viewing region.
     # glOrtho Defines a 2D orthographic projection matrix
     # An orthographic projection matrix is a way of representing three-dimensional objects in two dimensions without the effects of perspective. In simpler terms, it's a method to display 3D objects on a 2D screen where objects retain the same size and proportion regardless of their distance from the camera. This is different from perspective projection, where objects appear smaller as they get further away, mimicking how the human eye perceives depth.
     """  
@@ -36,6 +39,8 @@ def iterate():
         - The z-coordinates (depth) are between 0.0 and 1.0, but for most 2D applications, this depth range isn't visually impactful.
     """
     glOrtho(0.0, 500, 0.0, 500, 0.0, 1.0)
+
+    # GL_MODELVIEW is used for modeling and viewing transformations (like moving or rotating your entire scene)
     glMatrixMode (GL_MODELVIEW)
     glLoadIdentity()
 
@@ -43,9 +48,9 @@ def showScreen():
     # Clears the color and depth buffers. This means that the content of the window is cleared and ready for new drawing commands.
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     
+    # glLoadIdentity replaces the current matrix with the identity matrix.
     # Resets the current matrix, effectively "resetting" any transformations that have been applied so far.
     # In OpenGL, transformations (like translations, rotations, scaling) are applied to the current matrix. 
-    # glLoadIdentity replaces the current matrix with the identity matrix.
     glLoadIdentity()
     
     # Call the iterate() function above
