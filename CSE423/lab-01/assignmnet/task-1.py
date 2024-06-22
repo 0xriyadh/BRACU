@@ -3,17 +3,10 @@ from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
 
-import math
-
 W_Width, W_Height = 700, 700
 
-
-ball_x = ball_y = 0
-# speed = 0.01
-speed = 1
-ball_size = 2
-create_new = False
 rain_drops = []
+rain_direction = 0
 
 
 def convert_coordinate(x, y):
@@ -27,6 +20,7 @@ def draw_rain_drop(x, y):
     x, y = convert_coordinate(x, y)
     glPointSize(2)
     glBegin(GL_POINTS)
+    glColor3f(0, 0.7, 1)
     glVertex2f(x, y)
     glVertex2f(x, y + 1)
     glVertex2f(x, y + 2)
@@ -41,8 +35,8 @@ def drawHouse():
                             HOUSE'S BASE
     //////////////////////////////////////////////////////////////*/
     """
-    glLineWidth(8)  # width of the lines
-    glColor3f(1, 1, 1)  # color of the lines: white
+    glLineWidth(8)
+    glColor3f(1, 0.9, 0.5)
     glBegin(GL_LINES)
 
     # bottom line
@@ -69,7 +63,7 @@ def drawHouse():
     //////////////////////////////////////////////////////////////*/
     """
     glBegin(GL_TRIANGLES)
-    glColor3f(0.7, 0.7, 0.7)  # color of the roof: gray
+    glColor3f(1, 0.8, 0.3)
     glVertex2d(-160, -36)
     glVertex2d(160, -36)
     glVertex2d(0, 80)
@@ -81,7 +75,7 @@ def drawHouse():
     //////////////////////////////////////////////////////////////*/
     """
     glLineWidth(3)
-    glColor3f(0.7, 0.7, 0.7)  # color of the door: gray
+    glColor3f(1, 0.8, 0)
     glBegin(GL_LINES)
 
     # left line
@@ -105,7 +99,7 @@ def drawHouse():
     """
     glPointSize(8)
     glBegin(GL_POINTS)
-    glColor3f(0, 1, 1)
+    glColor3f(1, 0.5, 0)
     glVertex2d(-42, -180)
     glEnd()
 
@@ -115,7 +109,7 @@ def drawHouse():
     //////////////////////////////////////////////////////////////*/
     """
     glLineWidth(3)
-    glColor3f(0.7, 0.7, 0.7)  # color of the window: gray
+    glColor3f(1, 0.5, 0)
     glBegin(GL_LINES)
 
     # left line
@@ -137,6 +131,7 @@ def drawHouse():
     glEnd()
 
     glLineWidth(1)
+    glColor3f(1, 0.8, 0.6)
     glBegin(GL_LINES)
 
     # vertical line
@@ -162,36 +157,16 @@ def keyboardListener(key, x, y):
 
     glutPostRedisplay()
 
-
 def specialKeyListener(key, x, y):
-    global speed
-    if key == GLUT_KEY_UP:
-        speed *= 2
-        print("Speed Increased")
-    if key == GLUT_KEY_DOWN:  # up arrow key
-        speed /= 2
-        print("Speed Decreased")
+    global rain_direction
+    if key == GLUT_KEY_LEFT:
+        rain_direction -= 5
+        print("Rain Direction Changing towards Left")
+    if key == GLUT_KEY_RIGHT:  # up arrow key
+        rain_direction += 5
+        print("Rain Direction Changing towards Right")
 
     glutPostRedisplay()
-
-
-def mouseListener(button, state, x, y):  # /#/x, y is the x-y of the screen (2D)
-    global ball_x, ball_y, create_new
-    if button == GLUT_LEFT_BUTTON:
-        if (state == GLUT_DOWN):  # 2 times?? in ONE click? -- solution is checking DOWN or UP
-            print(x, y)
-            ball_x, ball_y = convert_coordinate(x, y)
-
-    if button == GLUT_RIGHT_BUTTON:
-        if state == GLUT_DOWN:
-            print(x, y)
-            create_new = convert_coordinate(x, y)
-    # case GLUT_MIDDLE_BUTTON:
-    #     ........
-
-    # glutPostRedisplay() ensures that any changes in object positions or new objects are rendered on the screen.
-    glutPostRedisplay()
-
 
 def display():
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)  # clear the display
@@ -209,25 +184,7 @@ def display():
     drawHouse()
     for raindrop in rain_drops:
         draw_rain_drop(raindrop[0], raindrop[1])
-    # drawAxes()
-    # global ball_x, ball_y, ball_size
-    # draw_points(ball_x, ball_y, ball_size)
-    # drawShapes()
-
-    # glBegin(GL_LINES)
-    # glVertex2d(180, 0)
-    # glVertex2d(180, 180)
-    # glVertex2d(180, 180)
-    # glVertex2d(0, 180)
-    # glEnd()
-
-    # if (create_new):
-    #     m, n = create_new
-    #     glBegin(GL_POINTS)
-    #     glColor3f(0.7, 0.8, 0.6)
-    #     glVertex2f(m, n)
-    #     glEnd()
-
+        
     glutSwapBuffers()
 
 
@@ -236,7 +193,8 @@ def animate():
     glutPostRedisplay()
     global rain_drops
     for i in range(len(rain_drops)):
-        rain_drops[i][1] += 5
+        rain_drops[i][1] += 4
+        rain_drops[i][0] += rain_direction * 0.1
         if rain_drops[i][1] > 700:
             rain_drops[i][0] = random.randint(0, W_Width)
             rain_drops[i][1] = 0
@@ -269,6 +227,6 @@ print(rain_drops)
 
 # glutMouseFunc(mouseListener)
 # glutKeyboardFunc(keyboardListener)
-# glutSpecialFunc(specialKeyListener)
+glutSpecialFunc(specialKeyListener)
 
 glutMainLoop()  # The main loop of OpenGL
