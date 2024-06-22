@@ -4,9 +4,24 @@ from OpenGL.GLUT import *
 from OpenGL.GLU import *
 
 W_Width, W_Height = 500, 500
-day_light = [0, 0, 0]
-opposite_day_light = [1, 1, 1]
+black_color = [0, 0, 0]
+blink_box_state = [0, 0, 0, 0]
 points = []
+speed = 1
+should_blink = False
+
+
+def draw_blink_box():
+    global blink_box_state
+    glEnable(GL_BLEND)  # Set up blending for transparency
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+    glBegin(GL_QUADS)
+    glColor4f(*blink_box_state)
+    glVertex2d(-250, 250)
+    glVertex2d(-250, -250)
+    glVertex2d(250, -250)
+    glVertex2d(250, 250)
+    glEnd()
 
 
 def convert_coordinate(x, y):
@@ -52,26 +67,51 @@ def keyboardListener(key, x, y):
 
 
 def specialKeyListener(key, x, y):
-    if key == GLUT_KEY_LEFT:
-        print("Rain Direction Changing towards Left")
-    if key == GLUT_KEY_RIGHT:  # up arrow key
-        print("Rain Direction Changing towards Right")
+    global speed
+
+    if key == GLUT_KEY_UP:
+        speed += 1
+        print("Speed Increased")
+
+    if key == GLUT_KEY_DOWN:
+        speed -= 1
+        print("Speed Decreased")
 
     glutPostRedisplay()
 
 
 def mouseListener(button, state, x, y):
+    global points, should_blink
+
     if button == GLUT_RIGHT_BUTTON:
         if state == GLUT_DOWN:
             points.append(new_point(x, y))
             print("New Point Added at", x, y)
+    if button == GLUT_LEFT_BUTTON:
+        if state == GLUT_DOWN:
+            print("Left Button Pressed")
+            should_blink = not should_blink
+            toggle_blink_box(0)
 
     glutPostRedisplay()
 
 
+def toggle_blink_box(value):
+    global blink_box_state, should_blink
+
+    if not should_blink:
+        return
+    # Toggle the alpha value for transparency
+    blink_box_state[3] = 1 - blink_box_state[3]
+    glutPostRedisplay()  # Request a redraw to see the changes
+    # Call toggle_blink_box again after 3 seconds
+    glutTimerFunc(500, toggle_blink_box, 0)
+
+
+
 def display():
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)  # clear the display
-    glClearColor(*day_light, 0)  # color black
+    glClearColor(*black_color, 0)  # color black
     glViewport(0, 0, W_Width, W_Height)
 
     # load the correct matrix -- MODEL-VIEW matrix
@@ -83,6 +123,7 @@ def display():
     glMatrixMode(GL_MODELVIEW)
 
     draw_points()
+    draw_blink_box()
 
     glutSwapBuffers()
 
@@ -91,8 +132,8 @@ def animate():
     # codes for any changes in Models, Camera
     glutPostRedisplay()
     for point in points:
-        point[0] += point[3]
-        point[1] += point[4]
+        point[0] += point[3] * speed
+        point[1] += point[4] * speed
 
         if point[0] >= W_Width or point[0] <= 0:
             point[3] *= -1
@@ -102,7 +143,7 @@ def animate():
 
 def init():
     # clear the screen
-    glClearColor(*day_light, 0)
+    glClearColor(*black_color, 0)
     # load the PROJECTION matrix
     glMatrixMode(GL_PROJECTION)
     # initialize the matrix
