@@ -1,3 +1,4 @@
+import random
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
@@ -23,6 +24,7 @@ def convert_coordinate(x, y):
 
 
 def draw_rain_drop(x, y):
+    x, y = convert_coordinate(x, y)
     glPointSize(2)
     glBegin(GL_POINTS)
     glVertex2f(x, y)
@@ -30,25 +32,11 @@ def draw_rain_drop(x, y):
     glVertex2f(x, y + 2)
     glVertex2f(x, y + 3)
     glVertex2f(x, y + 4)
-    glVertex2f(x, y + 5)
-    glVertex2f(x, y + 6)
-    glVertex2f(x, y + 7)
-    glVertex2f(x, y + 8)
-    glVertex2f(x, y + 9)
-    glVertex2f(x, y + 10)
-    glVertex2f(x, y + 11)
-    glVertex2f(x, y + 12)
-    glVertex2f(x, y + 13)
-    glVertex2f(x, y + 14)
-    glVertex2f(x, y + 15)
-    glVertex2f(x, y + 16)
-    glVertex2f(x, y + 17)
-    glVertex2f(x, y + 18)
     glEnd()
 
 
 def drawHouse():
-    """  
+    """
     /*//////////////////////////////////////////////////////////////
                             HOUSE'S BASE
     //////////////////////////////////////////////////////////////*/
@@ -75,7 +63,7 @@ def drawHouse():
 
     glEnd()
 
-    """  
+    """
     /*//////////////////////////////////////////////////////////////
                             HOUSE'S ROOF
     //////////////////////////////////////////////////////////////*/
@@ -87,7 +75,7 @@ def drawHouse():
     glVertex2d(0, 80)
     glEnd()
 
-    """  
+    """
     /*//////////////////////////////////////////////////////////////
                               DOOR
     //////////////////////////////////////////////////////////////*/
@@ -110,7 +98,7 @@ def drawHouse():
 
     glEnd()
 
-    """  
+    """
     /*//////////////////////////////////////////////////////////////
                                DOOR KNOB
     //////////////////////////////////////////////////////////////*/
@@ -121,7 +109,7 @@ def drawHouse():
     glVertex2d(-42, -180)
     glEnd()
 
-    """  
+    """
     /*//////////////////////////////////////////////////////////////
                                  WINDOW
     //////////////////////////////////////////////////////////////*/
@@ -220,7 +208,7 @@ def display():
             1. where is the camera (viewer)? - Camera Position (0, 0, 200)
             2. where is the camera looking? - Look At Point (0, 0, 0)
             3. Which direction is the camera's UP direction? - Up Vector (0, 1, 0)
-        
+
         1. Camera Position (0, 0, 200): This is where the camera is located in the 3D space. In your case, it's positioned at (0, 0, 200), which means it is 200 units away from the origin along the Z-axis. The camera is looking towards the origin if no other rotations are applied.
 
         2. Look At Point (0, 0, 0): This is the point in the 3D space that the camera is looking at. Here, it's set to (0, 0, 0), the origin of the scene. This means the camera is directly looking towards the center of the scene.
@@ -252,11 +240,11 @@ def display():
     #     glVertex2f(m, n)
     #     glEnd()
 
-    """  
+    """
         1. Swap Buffers: When you draw using OpenGL in a double-buffered mode, all rendering operations are performed on a back buffer. The front buffer is what is currently being displayed on your screen. glutSwapBuffers() swaps the front and back buffers. This means that the back buffer, where the latest frame was drawn, becomes the front buffer and is displayed on the screen, and the previous front buffer becomes the new back buffer for the next round of drawing.
-        
+
         2. Reduce Flickering: This buffer swapping is crucial for creating smooth animations because it ensures that only complete frames are displayed, reducing flickering and tearing that can occur if drawing directly to the display buffer.
-        
+
         3. Synchronization: It also helps in synchronizing the display with the refresh rate of the monitor, which can further smooth out the animation.
     """
     glutSwapBuffers()
@@ -267,9 +255,10 @@ def animate():
     glutPostRedisplay()
     global rain_drops
     for i in range(len(rain_drops)):
-        rain_drops[i][1] -= 1
-        if rain_drops[i][1] < -250:
-            rain_drops[i][1] = 250
+        rain_drops[i][1] += 5
+        if rain_drops[i][1] > 700:
+            rain_drops[i][0] = random.randint(0, W_Width)
+            rain_drops[i][1] = 0
 
 
 def init():
@@ -301,28 +290,17 @@ def init():
 glutInit()
 glutInitWindowSize(W_Width, W_Height)
 glutInitWindowPosition(0, 0)
-
-"""  
-    GLUT_DEPTH: This flag tells OpenGL to create a depth buffer for the window. The depth buffer is used to determine which objects are in front of others, which is important for rendering 3D scenes correctly.
-
-    GLUT_DOUBLE: This flag tells OpenGL to create a double-buffered window. Double buffering is a technique used to prevent flickering in animations. Instead of drawing directly to the screen, OpenGL draws to an off-screen buffer. Once the frame is complete, it swaps the off-screen buffer with the on-screen buffer, making the new frame visible to the user.
-
-    GLUT_RGB: This flag tells OpenGL to create a window with a red, green, and blue color buffer. This is the most common color mode used in OpenGL.
-"""
 glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGB)
-
 wind = glutCreateWindow(b"Rainfall House")
 init()
-
 glutDisplayFunc(display)  # display callback function
 
-# what you want to do in the idle time (when no drawing is occurring)
-# Idle Function: The idle function (animate() in this case) is called when there are no other events to process, such as mouse or keyboard input. It's a way to continuously update the scene or perform animations when the application is idle.
-# Inside the animate() function, glutPostRedisplay() is called to mark the current window as needing to be redisplayed. This triggers the display() function to be called, refreshing the window and updating the visual content.
-for i in range(245, -250, -100):
-    rain_drops.append([-200, i])
+for i in range(250):
+    x = random.randint(0, W_Width)
+    y = random.randint(0, W_Height)
+    rain_drops.append([x, y])
 glutIdleFunc(animate)
-# glutTimerFunc(10, animate, 0)
+print(rain_drops)
 
 # glutMouseFunc(mouseListener)
 # glutKeyboardFunc(keyboardListener)
