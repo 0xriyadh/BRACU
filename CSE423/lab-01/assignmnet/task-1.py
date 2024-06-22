@@ -12,22 +12,7 @@ ball_x = ball_y = 0
 speed = 1
 ball_size = 2
 create_new = False
-
-
-class point:
-    def __init__(self):
-        self.x = 0
-        self.y = 0
-        self.z = 0
-
-
-def crossProduct(a, b):
-    result = point()
-    result.x = a.y * b.z - a.z * b.y
-    result.y = a.z * b.x - a.x * b.z
-    result.z = a.x * b.y - a.y * b.x
-
-    return result
+rain_drops = []
 
 
 def convert_coordinate(x, y):
@@ -37,29 +22,28 @@ def convert_coordinate(x, y):
     return a, b
 
 
-def draw_points(x, y, s):
-    glPointSize(s)  # pixel size. by default 1 thake
+def draw_rain_drop(x, y):
+    glPointSize(2)
     glBegin(GL_POINTS)
-    glVertex2f(x, y)  # jekhane show korbe pixel
-    glEnd()
-
-
-def drawAxes():
-    glLineWidth(1)
-    glBegin(GL_LINES)
-    glColor3f(1.0, 0.0, 0.0)
-    glVertex2f(-250, 0)
-    glVertex2f(250, 0)
-    glColor3f(0.0, 0.0, 1.0)
-    glVertex2f(0, 250)
-    glVertex2f(0, -250)
-    glEnd()
-
-    glPointSize(5)
-    glBegin(GL_POINTS)
-    glColor3f(0, 1.0, 0.0)
-    glVertex2f(0, 0)
-
+    glVertex2f(x, y)
+    glVertex2f(x, y + 1)
+    glVertex2f(x, y + 2)
+    glVertex2f(x, y + 3)
+    glVertex2f(x, y + 4)
+    glVertex2f(x, y + 5)
+    glVertex2f(x, y + 6)
+    glVertex2f(x, y + 7)
+    glVertex2f(x, y + 8)
+    glVertex2f(x, y + 9)
+    glVertex2f(x, y + 10)
+    glVertex2f(x, y + 11)
+    glVertex2f(x, y + 12)
+    glVertex2f(x, y + 13)
+    glVertex2f(x, y + 14)
+    glVertex2f(x, y + 15)
+    glVertex2f(x, y + 16)
+    glVertex2f(x, y + 17)
+    glVertex2f(x, y + 18)
     glEnd()
 
 
@@ -178,26 +162,6 @@ def drawHouse():
     glEnd()
 
 
-def drawShapes():
-    glBegin(GL_TRIANGLES)
-    glVertex2d(-170, 170)
-    glColor3f(0, 1.0, 0.0)
-    glVertex2d(-180, 150)
-    glColor3f(1, 0, 0.0)
-    glVertex2d(-160, 150)
-    glEnd()
-
-    glBegin(GL_QUADS)
-    glVertex2d(-170, 120)
-    glColor3f(1, 0, 1)
-    glVertex2d(-150, 120)
-    glColor3f(0, 0, 1)
-    glVertex2d(-150, 140)
-    glColor3f(0, 1, 0)
-    glVertex2d(-170, 140)
-    glEnd()
-
-
 def keyboardListener(key, x, y):
 
     global ball_size
@@ -207,10 +171,6 @@ def keyboardListener(key, x, y):
     if key == b's':
         ball_size -= 1
         print("Size Decreased")
-    # if key==b's':
-    #    print(3)
-    # if key==b'd':
-    #     print(4)
 
     glutPostRedisplay()
 
@@ -223,22 +183,8 @@ def specialKeyListener(key, x, y):
     if key == GLUT_KEY_DOWN:  # up arrow key
         speed /= 2
         print("Speed Decreased")
+
     glutPostRedisplay()
-    # if key==GLUT_KEY_RIGHT:
-
-    # if key==GLUT_KEY_LEFT:
-
-    # if key==GLUT_KEY_PAGE_UP:
-
-    # if key==GLUT_KEY_PAGE_DOWN:
-
-    # case GLUT_KEY_INSERT:
-    #
-    #
-    # case GLUT_KEY_HOME:
-    #
-    # case GLUT_KEY_END:
-    #
 
 
 def mouseListener(button, state, x, y):  # /#/x, y is the x-y of the screen (2D)
@@ -285,6 +231,8 @@ def display():
     glMatrixMode(GL_MODELVIEW)
 
     drawHouse()
+    for raindrop in rain_drops:
+        draw_rain_drop(raindrop[0], raindrop[1])
     # drawAxes()
     # global ball_x, ball_y, ball_size
     # draw_points(ball_x, ball_y, ball_size)
@@ -317,9 +265,11 @@ def display():
 def animate():
     # codes for any changes in Models, Camera
     glutPostRedisplay()
-    global ball_x, ball_y, speed
-    ball_x = (ball_x+speed) % 180
-    ball_y = (ball_y+speed) % 180
+    global rain_drops
+    for i in range(len(rain_drops)):
+        rain_drops[i][1] -= 1
+        if rain_drops[i][1] < -250:
+            rain_drops[i][1] = 250
 
 
 def init():
@@ -361,7 +311,7 @@ glutInitWindowPosition(0, 0)
 """
 glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGB)
 
-wind = glutCreateWindow(b"OpenGL Coding Practice")
+wind = glutCreateWindow(b"Rainfall House")
 init()
 
 glutDisplayFunc(display)  # display callback function
@@ -369,7 +319,10 @@ glutDisplayFunc(display)  # display callback function
 # what you want to do in the idle time (when no drawing is occurring)
 # Idle Function: The idle function (animate() in this case) is called when there are no other events to process, such as mouse or keyboard input. It's a way to continuously update the scene or perform animations when the application is idle.
 # Inside the animate() function, glutPostRedisplay() is called to mark the current window as needing to be redisplayed. This triggers the display() function to be called, refreshing the window and updating the visual content.
-# glutIdleFunc(animate)
+for i in range(245, -250, -100):
+    rain_drops.append([-200, i])
+glutIdleFunc(animate)
+# glutTimerFunc(10, animate, 0)
 
 # glutMouseFunc(mouseListener)
 # glutKeyboardFunc(keyboardListener)
