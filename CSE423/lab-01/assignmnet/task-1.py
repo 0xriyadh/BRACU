@@ -27,9 +27,6 @@ def draw_rain_drop(x, y):
     glVertex2f(x, y + 1)
     glVertex2f(x, y + 2)
     glVertex2f(x, y + 3)
-    glVertex2f(x, y + 4)
-    glVertex2f(x, y + 5)
-    glVertex2f(x, y + 6)
     glEnd()
 
 
@@ -40,7 +37,7 @@ def drawHouse():
     //////////////////////////////////////////////////////////////*/
     """
     glLineWidth(8)
-    glColor3f(1, 0.9, 0.5)
+    glColor3f(*opposite_day_light)
     glBegin(GL_LINES)
 
     # bottom line
@@ -67,7 +64,7 @@ def drawHouse():
     //////////////////////////////////////////////////////////////*/
     """
     glBegin(GL_TRIANGLES)
-    glColor3f(1, 0.8, 0.3)
+    glColor3f(*opposite_day_light)
     glVertex2d(-160, -36)
     glVertex2d(160, -36)
     glVertex2d(0, 80)
@@ -79,7 +76,7 @@ def drawHouse():
     //////////////////////////////////////////////////////////////*/
     """
     glLineWidth(3)
-    glColor3f(1, 0.8, 0)
+    glColor3f(*opposite_day_light)
     glBegin(GL_LINES)
 
     # left line
@@ -103,7 +100,7 @@ def drawHouse():
     """
     glPointSize(8)
     glBegin(GL_POINTS)
-    glColor3f(1, 0.5, 0)
+    glColor3f(*opposite_day_light)
     glVertex2d(-42, -180)
     glEnd()
 
@@ -113,7 +110,7 @@ def drawHouse():
     //////////////////////////////////////////////////////////////*/
     """
     glLineWidth(3)
-    glColor3f(1, 0.5, 0)
+    glColor3f(*opposite_day_light)
     glBegin(GL_LINES)
 
     # left line
@@ -135,7 +132,7 @@ def drawHouse():
     glEnd()
 
     glLineWidth(1)
-    glColor3f(1, 0.8, 0.6)
+    glColor3f(*opposite_day_light)
     glBegin(GL_LINES)
 
     # vertical line
@@ -150,8 +147,6 @@ def drawHouse():
 
 
 def keyboardListener(key, x, y):
-
-    global ball_size
     if key == b'd':
         if day_light[0] >= 1 and day_light[1] >= 1 and day_light[2] >= 1:
             print("Day Mode Activated")
@@ -165,7 +160,7 @@ def keyboardListener(key, x, y):
         print("Day Light Increased", day_light)
     if key == b'n':
         if day_light[0] <= 0 and day_light[1] <= 0 and day_light[2] <= 0:
-            print("Night Mode Activated") 
+            print("Night Mode Activated")
             return
         day_light[0] -= 0.2
         day_light[1] -= 0.2
@@ -177,6 +172,7 @@ def keyboardListener(key, x, y):
 
     glutPostRedisplay()
 
+
 def specialKeyListener(key, x, y):
     global rain_direction
     if key == GLUT_KEY_LEFT:
@@ -187,6 +183,7 @@ def specialKeyListener(key, x, y):
         print("Rain Direction Changing towards Right")
 
     glutPostRedisplay()
+
 
 def display():
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)  # clear the display
@@ -222,7 +219,7 @@ def animate():
 
 def init():
     # clear the screen
-    glClearColor(0, 0, 0, 0)
+    glClearColor(*day_light, 0)
     # load the PROJECTION matrix
     glMatrixMode(GL_PROJECTION)
     # initialize the matrix
