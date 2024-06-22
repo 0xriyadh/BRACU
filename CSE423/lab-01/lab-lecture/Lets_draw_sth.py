@@ -102,8 +102,6 @@ def keyboardListener(key, x, y):
 
 def specialKeyListener(key, x, y):
     global speed
-    if key == 'w':
-        print(1)
     if key == GLUT_KEY_UP:
         speed *= 2
         print("Speed Increased")
@@ -175,7 +173,7 @@ def display():
     drawAxes()
     global ball_x, ball_y, ball_size
     draw_points(ball_x, ball_y, ball_size)
-    # drawShapes()
+    drawShapes()
 
     glBegin(GL_LINES)
     glVertex2d(180, 0)
@@ -258,8 +256,8 @@ glutDisplayFunc(display)  # display callback function
 # Inside the animate() function, glutPostRedisplay() is called to mark the current window as needing to be redisplayed. This triggers the display() function to be called, refreshing the window and updating the visual content.
 glutIdleFunc(animate)
 
+glutMouseFunc(mouseListener)
 glutKeyboardFunc(keyboardListener)
 glutSpecialFunc(specialKeyListener)
-glutMouseFunc(mouseListener)
 
 glutMainLoop()  # The main loop of OpenGL
