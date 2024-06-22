@@ -7,6 +7,7 @@ W_Width, W_Height = 700, 700
 
 rain_drops = []
 rain_direction = 0
+day_light = [0, 0, 0]
 
 
 def convert_coordinate(x, y):
@@ -148,12 +149,22 @@ def drawHouse():
 def keyboardListener(key, x, y):
 
     global ball_size
-    if key == b'w':
-        ball_size += 1
-        print("Size Increased")
-    if key == b's':
-        ball_size -= 1
-        print("Size Decreased")
+    if key == b'd':
+        if day_light[0] >= 1 and day_light[1] >= 1 and day_light[2] >= 1:
+            print("Day Mode Activated")
+            return
+        day_light[0] += 0.1
+        day_light[1] += 0.1
+        day_light[2] += 0.1
+        print("Day Light Increased", day_light)
+    if key == b'n':
+        if day_light[0] <= 0 and day_light[1] <= 0 and day_light[2] <= 0:
+            print("Night Mode Activated") 
+            return
+        day_light[0] -= 0.1
+        day_light[1] -= 0.1
+        day_light[2] -= 0.1
+        print("Day Light Decreased")
 
     glutPostRedisplay()
 
@@ -170,7 +181,7 @@ def specialKeyListener(key, x, y):
 
 def display():
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)  # clear the display
-    glClearColor(0, 0, 0, 0)  # color black
+    glClearColor(*day_light, 0)  # color black
     glViewport(0, 0, W_Width, W_Height)
 
     # load the correct matrix -- MODEL-VIEW matrix
@@ -184,7 +195,7 @@ def display():
     drawHouse()
     for raindrop in rain_drops:
         draw_rain_drop(raindrop[0], raindrop[1])
-        
+
     glutSwapBuffers()
 
 
@@ -226,7 +237,7 @@ glutIdleFunc(animate)
 print(rain_drops)
 
 # glutMouseFunc(mouseListener)
-# glutKeyboardFunc(keyboardListener)
+glutKeyboardFunc(keyboardListener)
 glutSpecialFunc(specialKeyListener)
 
 glutMainLoop()  # The main loop of OpenGL
