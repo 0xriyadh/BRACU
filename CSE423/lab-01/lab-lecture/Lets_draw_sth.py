@@ -8,7 +8,8 @@ W_Width, W_Height = 500, 500
 
 
 ball_x = ball_y = 0
-speed = 0.01
+# speed = 0.01
+speed = 1
 ball_size = 2
 create_new = False
 
@@ -132,15 +133,16 @@ def mouseListener(button, state, x, y):  # /#/x, y is the x-y of the screen (2D)
     if button == GLUT_LEFT_BUTTON:
         if (state == GLUT_DOWN):  #  2 times?? in ONE click? -- solution is checking DOWN or UP
             print(x, y)
-            c_X, c_y = convert_coordinate(x, y)
-            ball_x, ball_y = c_X, c_y
+            ball_x, ball_y = convert_coordinate(x, y)
 
     if button == GLUT_RIGHT_BUTTON:
         if state == GLUT_DOWN:
+            print(x, y)
             create_new = convert_coordinate(x, y)
     # case GLUT_MIDDLE_BUTTON:
     #     ........
 
+    # glutPostRedisplay() ensures that any changes in object positions or new objects are rendered on the screen.
     glutPostRedisplay()
 
 
@@ -175,20 +177,27 @@ def display():
     draw_points(ball_x, ball_y, ball_size)
     # drawShapes()
 
-    # glBegin(GL_LINES)
-    # glVertex2d(180, 0)
-    # glVertex2d(180, 180)
-    # glVertex2d(180, 180)
-    # glVertex2d(0, 180)
-    # glEnd()
+    glBegin(GL_LINES)
+    glVertex2d(180, 0)
+    glVertex2d(180, 180)
+    glVertex2d(180, 180)
+    glVertex2d(0, 180)
+    glEnd()
 
-    # if (create_new):
-    #     m, n = create_new
-    #     glBegin(GL_POINTS)
-    #     glColor3f(0.7, 0.8, 0.6)
-    #     glVertex2f(m, n)
-    #     glEnd()
+    if (create_new):
+        m, n = create_new
+        glBegin(GL_POINTS)
+        glColor3f(0.7, 0.8, 0.6)
+        glVertex2f(m, n)
+        glEnd()
 
+    """  
+        1. Swap Buffers: When you draw using OpenGL in a double-buffered mode, all rendering operations are performed on a back buffer. The front buffer is what is currently being displayed on your screen. glutSwapBuffers() swaps the front and back buffers. This means that the back buffer, where the latest frame was drawn, becomes the front buffer and is displayed on the screen, and the previous front buffer becomes the new back buffer for the next round of drawing.
+        
+        2. Reduce Flickering: This buffer swapping is crucial for creating smooth animations because it ensures that only complete frames are displayed, reducing flickering and tearing that can occur if drawing directly to the display buffer.
+        
+        3. Synchronization: It also helps in synchronizing the display with the refresh rate of the monitor, which can further smooth out the animation.
+    """
     glutSwapBuffers()
 
 
@@ -243,8 +252,11 @@ wind = glutCreateWindow(b"OpenGL Coding Practice")
 init()
 
 glutDisplayFunc(display)  # display callback function
-# what you want to do in the idle time (when no drawing is occuring)
-# glutIdleFunc(animate)
+
+# what you want to do in the idle time (when no drawing is occurring)
+# Idle Function: The idle function (animate() in this case) is called when there are no other events to process, such as mouse or keyboard input. It's a way to continuously update the scene or perform animations when the application is idle.
+# Inside the animate() function, glutPostRedisplay() is called to mark the current window as needing to be redisplayed. This triggers the display() function to be called, refreshing the window and updating the visual content.
+glutIdleFunc(animate)
 
 glutKeyboardFunc(keyboardListener)
 glutSpecialFunc(specialKeyListener)
