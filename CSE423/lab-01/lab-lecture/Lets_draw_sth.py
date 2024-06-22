@@ -7,7 +7,7 @@ import math
 W_Width, W_Height = 500, 500
 
 
-ballx = bally = 0
+ball_x = ball_y = 0
 speed = 0.01
 ball_size = 2
 create_new = False
@@ -128,12 +128,12 @@ def specialKeyListener(key, x, y):
 
 
 def mouseListener(button, state, x, y):  # /#/x, y is the x-y of the screen (2D)
-    global ballx, bally, create_new
+    global ball_x, ball_y, create_new
     if button == GLUT_LEFT_BUTTON:
         if (state == GLUT_DOWN):  #  2 times?? in ONE click? -- solution is checking DOWN or UP
             print(x, y)
             c_X, c_y = convert_coordinate(x, y)
-            ballx, bally = c_X, c_y
+            ball_x, ball_y = c_X, c_y
 
     if button == GLUT_RIGHT_BUTTON:
         if state == GLUT_DOWN:
@@ -171,8 +171,8 @@ def display():
     glMatrixMode(GL_MODELVIEW)
 
     drawAxes()
-    # global ballx, bally, ball_size
-    # draw_points(ballx, bally, ball_size)
+    global ball_x, ball_y, ball_size
+    draw_points(ball_x, ball_y, ball_size)
     # drawShapes()
 
     # glBegin(GL_LINES)
@@ -195,9 +195,9 @@ def display():
 def animate():
     # codes for any changes in Models, Camera
     glutPostRedisplay()
-    global ballx, bally, speed
-    ballx = (ballx+speed) % 180
-    bally = (bally+speed) % 180
+    global ball_x, ball_y, speed
+    ball_x = (ball_x+speed) % 180
+    ball_y = (ball_y+speed) % 180
 
 
 def init():
@@ -244,7 +244,7 @@ init()
 
 glutDisplayFunc(display)  # display callback function
 # what you want to do in the idle time (when no drawing is occuring)
-glutIdleFunc(animate)
+# glutIdleFunc(animate)
 
 glutKeyboardFunc(keyboardListener)
 glutSpecialFunc(specialKeyListener)
