@@ -9,6 +9,7 @@ blink_box_state = [0, 0, 0, 0]
 points = []
 speed = 1
 should_blink = False
+freezed = False
 
 
 def draw_blink_box():
@@ -58,10 +59,12 @@ def new_point(x, y):
 
 
 def keyboardListener(key, x, y):
-    if key == b'd':
-        print("Day Light Increased")
-    if key == b'n':
-        print("Day Light Decreased")
+    global freezed
+
+    if key == b' ':
+        freezed = not freezed
+        glutTimerFunc(100, toggle_blink_box, 0)
+        print("Freezed" if freezed else "Unfroze")
 
     glutPostRedisplay()
 
@@ -69,13 +72,14 @@ def keyboardListener(key, x, y):
 def specialKeyListener(key, x, y):
     global speed
 
-    if key == GLUT_KEY_UP:
-        speed += 1
-        print("Speed Increased")
+    if not freezed:
+        if key == GLUT_KEY_UP:
+            speed += 1
+            print("Speed Increased")
 
-    if key == GLUT_KEY_DOWN:
-        speed -= 1
-        print("Speed Decreased")
+        if key == GLUT_KEY_DOWN:
+            speed -= 1
+            print("Speed Decreased")
 
     glutPostRedisplay()
 
@@ -83,15 +87,18 @@ def specialKeyListener(key, x, y):
 def mouseListener(button, state, x, y):
     global points, should_blink
 
-    if button == GLUT_RIGHT_BUTTON:
-        if state == GLUT_DOWN:
-            points.append(new_point(x, y))
-            print("New Point Added at", x, y)
-    if button == GLUT_LEFT_BUTTON:
-        if state == GLUT_DOWN:
-            print("Left Button Pressed")
-            should_blink = not should_blink
-            toggle_blink_box(0)
+    if not freezed:
+        if button == GLUT_RIGHT_BUTTON:
+            if state == GLUT_DOWN:
+                points.append(new_point(x, y))
+                print("New Point Added at", x, y)
+
+        if button == GLUT_LEFT_BUTTON:
+            if state == GLUT_DOWN:
+                print("Left Button Pressed")
+                should_blink = not should_blink
+                if should_blink:
+                    glutTimerFunc(100, toggle_blink_box, 0)
 
     glutPostRedisplay()
 
@@ -99,14 +106,12 @@ def mouseListener(button, state, x, y):
 def toggle_blink_box(value):
     global blink_box_state, should_blink
 
-    if not should_blink:
+    if not should_blink or freezed:
         return
     # Toggle the alpha value for transparency
     blink_box_state[3] = 1 - blink_box_state[3]
-    glutPostRedisplay()  # Request a redraw to see the changes
-    # Call toggle_blink_box again after 3 seconds
-    glutTimerFunc(500, toggle_blink_box, 0)
-
+    # glutPostRedisplay()  # Request a redraw to see the changes
+    glutTimerFunc(100, toggle_blink_box, 0)
 
 
 def display():
@@ -123,7 +128,8 @@ def display():
     glMatrixMode(GL_MODELVIEW)
 
     draw_points()
-    draw_blink_box()
+    if should_blink:
+        draw_blink_box()
 
     glutSwapBuffers()
 
@@ -131,14 +137,15 @@ def display():
 def animate():
     # codes for any changes in Models, Camera
     glutPostRedisplay()
-    for point in points:
-        point[0] += point[3] * speed
-        point[1] += point[4] * speed
+    if not freezed:
+        for point in points:
+            point[0] += point[3] * speed
+            point[1] += point[4] * speed
 
-        if point[0] >= W_Width or point[0] <= 0:
-            point[3] *= -1
-        if point[1] >= W_Height or point[1] <= 0:
-            point[4] *= -1
+            if point[0] >= W_Width or point[0] <= 0:
+                point[3] *= -1
+            if point[1] >= W_Height or point[1] <= 0:
+                point[4] *= -1
 
 
 def init():
