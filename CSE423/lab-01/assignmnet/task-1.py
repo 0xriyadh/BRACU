@@ -215,6 +215,11 @@ def animate():
         if rain_drops[i][1] > 700:
             rain_drops[i][0] = random.randint(0, W_Width)
             rain_drops[i][1] = 0
+        if rain_drops[i][0] > W_Width:
+            rain_drops[i][0] = 0
+        if rain_drops[i][0] < 0:
+            rain_drops[i][0] = W_Width
+        
 
 
 def init():
