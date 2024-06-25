@@ -18,10 +18,10 @@ def draw_blink_box():
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
     glBegin(GL_QUADS)
     glColor4f(*blink_box_state)
-    glVertex2d(-250, 250)
-    glVertex2d(-250, -250)
-    glVertex2d(250, -250)
-    glVertex2d(250, 250)
+    glVertex2d(-280, 280)
+    glVertex2d(-280, -280)
+    glVertex2d(280, -280)
+    glVertex2d(280, 280)
     glEnd()
 
 
