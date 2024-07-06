@@ -1,8 +1,8 @@
-line 1: I love Python Programming.
-line 2: I love JavaScript Programming.
-line 3: I love C Programming.
-line 4: I love Go Programming.
-line 5: I love C++ Programming.
-line 6: I love Rust Programming.
-line 7: I love PHP Programming.
-line 8: I love Ruby Programming.
+I love Python Programming.
+I love JavaScript Programming.
+I love C Programming.
+I love Go Programming.
+I love C++ Programming.
+I love Rust Programming.
+I love PHP Programming.
+I love Ruby Programming.
