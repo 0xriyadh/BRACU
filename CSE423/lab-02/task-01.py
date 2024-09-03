@@ -2,7 +2,6 @@ import random
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
-import sys
 
 W_Width, W_Height = 500, 500
 pause = False
@@ -154,7 +153,7 @@ def mouseListener(button, state, x, y):
             # close button
             if 450<x<490 and 450< (W_Height - y) <490: #converting y coordinate
                 print(f"Goodbye! Score: {score}")
-                sys.exit(0)
+                glutDestroyWindow(glutGetWindow())  # Close the window
 
             # pause button
             elif 230<x<270 and 450<(500-y)<490:
