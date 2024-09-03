@@ -150,11 +150,6 @@ def display():
     drawLine(10, 470, 30, 490)
     drawLine(10, 470, 30, 450)
 
-    #close button
-    glColor3f(1.0,0.0,0.0)
-    drawLine(450, 490, 490, 450)
-    drawLine(450, 450, 490, 490)
-
     #pause button
     global p_sign
     if p_sign==False:
@@ -166,6 +161,11 @@ def display():
         drawLine(230, 490, 270, 470)
         drawLine(230, 490, 230, 450)
         drawLine(230, 450, 270, 470)
+
+    #close button
+    glColor3f(1.0,0.0,0.0)
+    drawLine(450, 490, 490, 450)
+    drawLine(450, 450, 490, 490)
 
     glutSwapBuffers()
 
