@@ -4,7 +4,8 @@ from OpenGL.GLUT import *
 from OpenGL.GLU import *
 
 W_Width, W_Height = 700, 700
-p_sign = False
+pause = False
+gameOver = False
 
 def drawPixel(x, y):
     glPointSize(2)
@@ -103,6 +104,28 @@ def drawFinalLine(x0, y0, x1, y1, zone):
             x += 1
             y += 1
 
+def drawDiamond(x, y):
+    glColor3f(random.random(), random.random(), random.random())
+    drawLine(x, y, x - 12, y - 20)
+    drawLine(x, y, x + 12, y - 20)
+    drawLine(x, y - 40, x - 12, y - 20)
+    drawLine(x, y - 40, x + 12, y - 20)
+
+def drawCatcher(x):
+    global gameOver
+    y = 15
+
+    if gameOver:
+        glColor(1,0,0)
+    else:
+        glColor3f(1,1,1)
+
+    drawLine(x, y, x + 100, y)
+    drawLine(x, y, x + 20, y - 15)
+    drawLine(x + 100, y, x + 80, y - 15)
+    drawLine(x + 20, y - 15, x + 80, y - 15)
+    
+
 def keyboardListener(key, x, y):
     if key == b'd':
         if day_light[0] >= 1 and day_light[1] >= 1 and day_light[2] >= 1:
@@ -144,15 +167,15 @@ def display():
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)  # clear the display
     glClearColor(0, 0, 0, 0)
 
-    #restart button
+    # restart button
     glColor3f(0.2,0.8,0.9)
     drawLine(10, 470, 50, 470)
     drawLine(10, 470, 30, 490)
     drawLine(10, 470, 30, 450)
 
-    #pause button
-    global p_sign
-    if p_sign==False:
+    # pause button
+    global pause
+    if pause == False:
         glColor3f(1.0,0.8,0.2)
         drawLine(240, 490, 240, 450)
         drawLine(260, 490, 260, 450)
@@ -162,28 +185,19 @@ def display():
         drawLine(230, 490, 230, 450)
         drawLine(230, 450, 270, 470)
 
-    #close button
+    # close button
     glColor3f(1.0,0.0,0.0)
     drawLine(450, 490, 490, 450)
     drawLine(450, 450, 490, 490)
 
-    glutSwapBuffers()
+    # diamond
+    drawDiamond(250, 250)
 
-def animate():
-    # codes for any changes in Models, Camera
-    glutPostRedisplay()
-    global rain_drops
-    for i in range(len(rain_drops)):
-        rain_drops[i][1] += 6
-        rain_drops[i][0] += rain_direction * 0.1
-        if rain_drops[i][1] > 700:
-            rain_drops[i][0] = random.randint(0, W_Width)
-            rain_drops[i][1] = 0
-        if rain_drops[i][0] > W_Width:
-            rain_drops[i][0] = 0
-        if rain_drops[i][0] < 0:
-            rain_drops[i][0] = W_Width
-        
+    # catcher
+    drawCatcher(400)
+
+    glutSwapBuffers()
+ 
 def init():
     # clear the screen
     glClearColor(0, 0, 0, 0)
