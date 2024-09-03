@@ -3,9 +3,12 @@ from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
 
-W_Width, W_Height = 700, 700
+W_Width, W_Height = 500, 500
 pause = False
 gameOver = False
+showDiamond = False
+diamondInfo = None
+speed = 0.4
 
 def drawPixel(x, y):
     glPointSize(2)
@@ -105,11 +108,19 @@ def drawFinalLine(x0, y0, x1, y1, zone):
             y += 1
 
 def drawDiamond(x, y):
-    glColor3f(random.random(), random.random(), random.random())
     drawLine(x, y, x - 12, y - 20)
     drawLine(x, y, x + 12, y - 20)
     drawLine(x, y - 40, x - 12, y - 20)
     drawLine(x, y - 40, x + 12, y - 20)
+
+def generateDiamond():
+    global diamondInfo
+    x = random.randint(12, W_Width-12)
+    y = 440
+    r, g, b = random.uniform(0.5, 1.0), random.uniform(0.5, 1.0), random.uniform(0.5, 1.0)
+    
+    print("Diamond Generated at", x, y, "with color", r, g, b)
+    diamondInfo = [x, y, r, g, b]
 
 def drawCatcher(x):
     global gameOver
@@ -123,8 +134,7 @@ def drawCatcher(x):
     drawLine(x, y, x + 100, y)
     drawLine(x, y, x + 20, y - 15)
     drawLine(x + 100, y, x + 80, y - 15)
-    drawLine(x + 20, y - 15, x + 80, y - 15)
-    
+    drawLine(x + 20, y - 15, x + 80, y - 15)   
 
 def keyboardListener(key, x, y):
     if key == b'd':
@@ -163,6 +173,15 @@ def specialKeyListener(key, x, y):
 
     glutPostRedisplay()
 
+def animate():
+    global showDiamond, speed, diamondInfo
+    if showDiamond:
+        x, y, r, g, b = diamondInfo
+        glColor3f(r, g, b)
+        drawDiamond(x, y)
+        diamondInfo[1] = diamondInfo[1] - speed
+    glutPostRedisplay() 
+
 def display():
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)  # clear the display
     glClearColor(0, 0, 0, 0)
@@ -190,14 +209,17 @@ def display():
     drawLine(450, 490, 490, 450)
     drawLine(450, 450, 490, 490)
 
-    # diamond
-    drawDiamond(250, 250)
+    if not gameOver:
+        global diamondInfo, showDiamond
+        
+        if not showDiamond:
+            print("Generating Diamond")
+            generateDiamond()
+            showDiamond = True
 
-    # catcher
-    drawCatcher(400)
-
+    animate()
     glutSwapBuffers()
- 
+
 def init():
     # clear the screen
     glClearColor(0, 0, 0, 0)
