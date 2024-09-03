@@ -37,7 +37,7 @@ def zone_identifier(dx, dy):
                 return 5
 
 # convert from zone 0 to other zones
-def zone_converter(x, y, zone):
+def zone_converter_0_to_others(x, y, zone):
     if zone == 0:
         return x, y
     elif zone == 1:
@@ -54,33 +54,36 @@ def zone_converter(x, y, zone):
         return y, -x
     elif zone == 7:
         return x, -y
-
+    
+# convert from other zones to zone 0
+def zone_converter_other_to_0(x, y, zone):
+    if zone == 0:
+        return x, y
+    elif zone == 1:
+        return y, x
+    elif zone == 2:
+        return y, -x
+    elif zone == 3:
+        return -x, y
+    elif zone == 4:
+        return -x, -y
+    elif zone == 5:
+        return -y, -x
+    elif zone == 6:
+        return -y, x
+    elif zone == 7:
+        return x, -y
+  
 def drawLine(x0, y0, x1, y1):
     dx = x1 - x0
     dy = y1 - y0
 
-    if abs(dx)>=abs(dy):
-        if dx>=0:
-            if dy>=0:
-                drawFinalLine(x0, y0, x1, y1, 0)
-            else:
-                drawFinalLine(x0, -y0, x1, -y1, 7)
-        else:
-            if dy>=0:
-                drawFinalLine(-x0, y0, -x1, y1, 3)
-            else:
-                drawFinalLine(-x0, -y0, -x1, -y1, 4)
-    else:
-        if dx>=0:
-            if dy>=0:
-                drawFinalLine(y0, x0, y1, x1, 1)
-            else:
-                drawFinalLine(-y0, x0, -y1, x1, 6)
-        else:
-            if dy>=0:
-                drawFinalLine(y0, -x0, y1, -x1, 2)
-            else:
-                drawFinalLine(-y0, -x0, -y1, -x1, 5)
+    zone = zone_identifier(dx, dy) 
+
+    x0, y0 = zone_converter_other_to_0(x0, y0, zone)
+    x1, y1 = zone_converter_other_to_0(x1, y1, zone)
+
+    drawFinalLine(x0, y0, x1, y1, zone)
 
 def drawFinalLine(x0, y0, x1, y1, zone):
     dx = x1-x0
@@ -91,7 +94,7 @@ def drawFinalLine(x0, y0, x1, y1, zone):
     x=x0
     y=y0
     while x < x1:
-        drawPixel(*zone_converter(x, y, zone))
+        drawPixel(*zone_converter_0_to_others(x, y, zone))
         if d < 0:
             d += dE
             x += 1
@@ -147,8 +150,8 @@ def display():
     drawLine(455, 455, 495, 495)
 
     glColor3f(1.0,0.8,0.2)
-    drawLine(240, 495, 240, 455)
-    drawLine(260, 495, 260, 455)
+    # drawLine(240, 495, 240, 455)
+    # drawLine(260, 495, 260, 455)
 
     #pause
     global p_sign
