@@ -4,147 +4,101 @@ from OpenGL.GLUT import *
 from OpenGL.GLU import *
 
 W_Width, W_Height = 700, 700
+p_sign = False
 
-rain_drops = []
-rain_direction = 0
-day_light = [0, 0, 0]
-opposite_day_light = [1, 1, 1]
-
-
-def convert_coordinate(x, y):
-    global W_Width, W_Height
-    a = x - (W_Width/2)
-    b = (W_Height/2) - y
-    return a, b
-
-
-def draw_rain_drop(x, y):
-    x, y = convert_coordinate(x, y)
+def drawPixel(x, y):
     glPointSize(2)
     glBegin(GL_POINTS)
-    glColor3f(*opposite_day_light)
     glVertex2f(x, y)
-    glVertex2f(x, y + 1)
-    glVertex2f(x, y + 2)
-    glVertex2f(x, y + 3)
     glEnd()
 
+def zone_identifier(dx, dy):
+    if dx >= 0:
+        if dy >= 0:
+            if abs(dx) >= abs(dy):
+                return 0
+            else:
+                return 1
+        else:
+            if abs(dx) >= abs(dy):
+                return 7
+            else:
+                return 6
+    else:
+        if dy >= 0:
+            if abs(dx) >= abs(dy):
+                return 3
+            else:
+                return 2
+        else:
+            if abs(dx) >= abs(dy):
+                return 4
+            else:
+                return 5
 
-def drawHouse():
-    """
-    /*//////////////////////////////////////////////////////////////
-                            HOUSE'S BASE
-    //////////////////////////////////////////////////////////////*/
-    """
-    glLineWidth(8)
-    glColor3f(*opposite_day_light)
-    glBegin(GL_LINES)
+# convert from zone 0 to other zones
+def zone_converter(x, y, zone):
+    if zone == 0:
+        return x, y
+    elif zone == 1:
+        return y, x
+    elif zone == 2:
+        return -y, x
+    elif zone == 3:
+        return -x, y
+    elif zone == 4:
+        return -x, -y
+    elif zone == 5:
+        return -y, -x
+    elif zone == 6:
+        return y, -x
+    elif zone == 7:
+        return x, -y
 
-    # bottom line
-    glVertex2d(-140, -247)
-    glVertex2d(140, -247)
+def drawLine(x0, y0, x1, y1):
+    dx = x1 - x0
+    dy = y1 - y0
 
-    # right line
-    glVertex2d(140, -250)
-    glVertex2d(140, -30)
+    if abs(dx)>=abs(dy):
+        if dx>=0:
+            if dy>=0:
+                drawFinalLine(x0, y0, x1, y1, 0)
+            else:
+                drawFinalLine(x0, -y0, x1, -y1, 7)
+        else:
+            if dy>=0:
+                drawFinalLine(-x0, y0, -x1, y1, 3)
+            else:
+                drawFinalLine(-x0, -y0, -x1, -y1, 4)
+    else:
+        if dx>=0:
+            if dy>=0:
+                drawFinalLine(y0, x0, y1, x1, 1)
+            else:
+                drawFinalLine(-y0, x0, -y1, x1, 6)
+        else:
+            if dy>=0:
+                drawFinalLine(y0, -x0, y1, -x1, 2)
+            else:
+                drawFinalLine(-y0, -x0, -y1, -x1, 5)
 
-    # upper line
-    glVertex2d(140, -33)
-    glVertex2d(-140, -33)
-
-    # left line
-    glVertex2d(-140, -30)
-    glVertex2d(-140, -250)
-
-    glEnd()
-
-    """
-    /*//////////////////////////////////////////////////////////////
-                            HOUSE'S ROOF
-    //////////////////////////////////////////////////////////////*/
-    """
-    glBegin(GL_TRIANGLES)
-    glColor3f(*opposite_day_light)
-    glVertex2d(-160, -36)
-    glVertex2d(160, -36)
-    glVertex2d(0, 80)
-    glEnd()
-
-    """
-    /*//////////////////////////////////////////////////////////////
-                              DOOR
-    //////////////////////////////////////////////////////////////*/
-    """
-    glLineWidth(3)
-    glColor3f(*opposite_day_light)
-    glBegin(GL_LINES)
-
-    # left line
-    glVertex2d(-100, -120)
-    glVertex2d(-100, -245)
-
-    # right line
-    glVertex2d(-30, -120)
-    glVertex2d(-30, -245)
-
-    # upper line
-    glVertex2d(-100, -121)
-    glVertex2d(-30, -121)
-
-    glEnd()
-
-    """
-    /*//////////////////////////////////////////////////////////////
-                               DOOR KNOB
-    //////////////////////////////////////////////////////////////*/
-    """
-    glPointSize(8)
-    glBegin(GL_POINTS)
-    glColor3f(*opposite_day_light)
-    glVertex2d(-42, -180)
-    glEnd()
-
-    """
-    /*//////////////////////////////////////////////////////////////
-                                 WINDOW
-    //////////////////////////////////////////////////////////////*/
-    """
-    glLineWidth(3)
-    glColor3f(*opposite_day_light)
-    glBegin(GL_LINES)
-
-    # left line
-    glVertex2d(40, -70)
-    glVertex2d(40, -130)
-
-    # right line
-    glVertex2d(100, -70)
-    glVertex2d(100, -130)
-
-    # upper line
-    glVertex2d(40, -71)
-    glVertex2d(100, -71)
-
-    # lower line
-    glVertex2d(40, -129)
-    glVertex2d(100, -129)
-
-    glEnd()
-
-    glLineWidth(1)
-    glColor3f(*opposite_day_light)
-    glBegin(GL_LINES)
-
-    # vertical line
-    glVertex2d(70, -72)
-    glVertex2d(70, -130)
-
-    # horizontal line
-    glVertex2d(40, -100)
-    glVertex2d(100, -100)
-
-    glEnd()
-
+def drawFinalLine(x0, y0, x1, y1, zone):
+    dx = x1-x0
+    dy = y1-y0
+    dE = 2*(dy)
+    dNE = 2*(dy - dx)
+    d = 2*(dy) - dx
+    x=x0
+    y=y0
+    while x < x1:
+        drawPixel(*zone_converter(x, y, zone))
+        if d < 0:
+            d += dE
+            x += 1
+        else:
+            d += dNE
+            x += 1
+            y += 1
 
 def keyboardListener(key, x, y):
     if key == b'd':
@@ -172,7 +126,6 @@ def keyboardListener(key, x, y):
 
     glutPostRedisplay()
 
-
 def specialKeyListener(key, x, y):
     global rain_direction
     if key == GLUT_KEY_LEFT:
@@ -184,22 +137,38 @@ def specialKeyListener(key, x, y):
 
     glutPostRedisplay()
 
-
 def display():
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)  # clear the display
     glClearColor(0, 0, 0, 0)
-    glViewport(0, 0, W_Width, W_Height)
 
-    glMatrixMode(GL_MODELVIEW)
-    glLoadIdentity()
+    #cross
+    glColor3f(1.0,0.0,0.0)
+    drawLine(455, 495, 495, 455)
+    drawLine(455, 455, 495, 495)
 
-    gluLookAt(0, 0, 200,	0, 0, 0,	0, 1, 0)
-    glMatrixMode(GL_MODELVIEW)
+    glColor3f(1.0,0.8,0.2)
+    drawLine(240, 495, 240, 455)
+    drawLine(260, 495, 260, 455)
 
-    
+    #pause
+    global p_sign
+    if p_sign==False:
+        glColor3f(1.0,0.8,0.2)
+        drawLine(240, 495, 240, 455)
+        drawLine(260, 495, 260, 455)
+    else:
+        glColor3f(1.0, 0.8, 0.2)
+        drawLine(230, 495, 270, 475)
+        drawLine(230, 495, 230, 455)
+        drawLine(230, 455, 270, 475)
+
+    #restart
+    glColor3f(0.2,0.8,0.9)
+    drawLine(25, 495, 5, 475)
+    drawLine(5, 475, 25, 455)
+    drawLine(5, 475, 45, 475)
 
     glutSwapBuffers()
-
 
 def animate():
     # codes for any changes in Models, Camera
@@ -216,17 +185,15 @@ def animate():
         if rain_drops[i][0] < 0:
             rain_drops[i][0] = W_Width
         
-
-
 def init():
     # clear the screen
     glClearColor(0, 0, 0, 0)
-    # load the PROJECTION matrix
-    glMatrixMode(GL_PROJECTION)
-    # initialize the matrix
-    glLoadIdentity()
-    gluPerspective(104,	1,	1,	1000.0)
-
+    # # load the PROJECTION matrix 
+    # glMatrixMode(GL_PROJECTION)
+    # # initialize the matrix
+    # glLoadIdentity()
+    # gluPerspective(104,	1,	1,	1000.0)
+    glOrtho(0, 500, 0, 500, 0, 1)
 
 glutInit()
 glutInitWindowSize(W_Width, W_Height)
@@ -247,4 +214,4 @@ glutDisplayFunc(display)
 # glutKeyboardFunc(keyboardListener)
 # glutSpecialFunc(specialKeyListener)
 
-# glutMainLoop()  # The main loop of OpenGL
+glutMainLoop()  # The main loop of OpenGL

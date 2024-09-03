@@ -42,6 +42,7 @@ def drawLine(x0, y0, x1, y1):
                 drawLine_0(-y0, -x0, -y1, -x1, 5)
 
 def drawLine_0(x0, y0, x1, y1, zone):
+    print("Zone:", zone)
     dx = x1-x0
     dy = y1-y0
     dE = 2*(dy)
@@ -49,6 +50,7 @@ def drawLine_0(x0, y0, x1, y1, zone):
     d = 2*(dy) - dx
     x=x0
     y=y0
+    print(x, y, x0, y0, x1, y1)
     while x < x1:
         draw8way(x, y, zone)
         if d < 0:
@@ -58,7 +60,6 @@ def drawLine_0(x0, y0, x1, y1, zone):
             d += dNE
             x += 1
             y += 1
-
 
 def draw8way(x, y, zone):
     if zone == 0:
@@ -176,62 +177,62 @@ def animate():
 def display():
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glColor3f(1.0, 1.0, 1.0)
-    #drawLine(0, 0, 500, 300)
+    # drawLine(0, 0, 500, 300)
 
     #cross
     glColor3f(1.0,0.0,0.0)
-    drawLine(455, 495, 495, 455)
-    drawLine(455, 455, 495, 495)
+    # drawLine(455, 495, 495, 455)
+    # drawLine(455, 455, 495, 495)
 
     #pause
     global p_sign
     if p_sign==False:
         glColor3f(1.0,0.8,0.2)
         drawLine(240, 495, 240, 455)
-        drawLine(260, 495, 260, 455)
+        # drawLine(260, 495, 260, 455)
     else:
         glColor3f(1.0, 0.8, 0.2)
-        drawLine(230, 495, 270, 475)
-        drawLine(230, 495, 230, 455)
-        drawLine(230, 455, 270, 475)
+        # drawLine(230, 495, 270, 475)
+        # drawLine(230, 495, 230, 455)
+        # drawLine(230, 455, 270, 475)
 
     #restart
     glColor3f(0.2,0.8,0.9)
-    drawLine(25, 495, 5, 475)
-    drawLine(5, 475, 25, 455)
-    drawLine(5, 475, 45, 475)
+    # drawLine(25, 495, 5, 475)
+    # drawLine(5, 475, 25, 455)
+    # drawLine(5, 475, 45, 475)
 
-    global game, diam, c_position, d_data, speed, score
+    # global game, diam, c_position, d_data, speed, score
 
-    if game:
-        if diam == False:
-            diamond()
-            diam = True
-        else:
-            #diamond()
-            x = d_data[0]
-            y = d_data[1]
-            c = c_position
+    # if game:
+    #     if diam == False:
+    #         diamond()
+    #         diam = True
+    #     else:
+    #         #diamond()
+    #         x = d_data[0]
+    #         y = d_data[1]
+    #         c = c_position
 
-            if (y-50) <= 10 and c+220 <= x <= c+280: 
-                score += 1
-                diam = False
-                d_data = None
-                print("Score:", score)
-                # speed = min(speed*1.2,2)
-                speed = speed*1.2
+    #         if (y-50) <= 10 and c+220 <= x <= c+280: 
+    #             score += 1
+    #             diam = False
+    #             d_data = None
+    #             print("Score:", score)
+    #             # speed = min(speed*1.2,2)
+    #             speed = speed*1.2
 
-            elif (y-50) <= 1:
-                print(f"Game over! Score: {score}")
-                score = 0
-                game= False
-                diam = False
-                d_data = None
-                speed = 0.2
+    #         elif (y-50) <= 1:
+    #             print(f"Game over! Score: {score}")
+    #             score = 0
+    #             game= False
+    #             diam = False
+    #             d_data = None
+    #             speed = 0.2
 
 
-    animate()
-    catcher(c_position)
+    # animate()
+    # catcher(c_position)
     glutSwapBuffers()
 
 
