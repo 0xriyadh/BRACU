@@ -144,32 +144,28 @@ def display():
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)  # clear the display
     glClearColor(0, 0, 0, 0)
 
-    #cross
+    #restart button
+    glColor3f(0.2,0.8,0.9)
+    drawLine(10, 470, 50, 470)
+    drawLine(10, 470, 30, 490)
+    drawLine(10, 470, 30, 450)
+
+    #close button
     glColor3f(1.0,0.0,0.0)
-    drawLine(455, 495, 495, 455)
-    drawLine(455, 455, 495, 495)
+    drawLine(450, 490, 490, 450)
+    drawLine(450, 450, 490, 490)
 
-    glColor3f(1.0,0.8,0.2)
-    # drawLine(240, 495, 240, 455)
-    # drawLine(260, 495, 260, 455)
-
-    #pause
+    #pause button
     global p_sign
     if p_sign==False:
         glColor3f(1.0,0.8,0.2)
-        drawLine(240, 495, 240, 455)
-        drawLine(260, 495, 260, 455)
+        drawLine(240, 490, 240, 450)
+        drawLine(260, 490, 260, 450)
     else:
         glColor3f(1.0, 0.8, 0.2)
-        drawLine(230, 495, 270, 475)
-        drawLine(230, 495, 230, 455)
-        drawLine(230, 455, 270, 475)
-
-    #restart
-    glColor3f(0.2,0.8,0.9)
-    drawLine(25, 495, 5, 475)
-    drawLine(5, 475, 25, 455)
-    drawLine(5, 475, 45, 475)
+        drawLine(230, 490, 270, 470)
+        drawLine(230, 490, 230, 450)
+        drawLine(230, 450, 270, 470)
 
     glutSwapBuffers()
 
