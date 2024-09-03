@@ -8,7 +8,7 @@ pause = False
 gameOver = False
 showDiamond = False
 diamondInfo = None
-speed = 0.9
+speed = 0.4
 catcher_position = 200
 catcher_pause = False
 catcher_speed = 15
@@ -171,6 +171,7 @@ def mouseListener(button, state, x, y):
                 print("Starting over!")
                 showDiamond=False
                 diamondInfo=None
+                gameOver=False
                 score=0
                 catcher_position=200
     glutPostRedisplay()
