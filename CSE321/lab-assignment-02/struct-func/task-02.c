@@ -1,19 +1,7 @@
 #include <stdio.h>
 #include <math.h>
-// Function to check if a number is perfect
 
-// without using math.h
-// int isPerfect(int num) {
-//     int sum = 0;
-//     for (int i = 1; i <= num / 2; i++) {
-//         if (num % i == 0) {
-//             sum += i;
-//         }
-//     }
-//     return sum == num;
-// }
-
-// using math.h
+// this function checks if a number is perfect or not
 int isPerfect(int num)
 {
     if (num < 2)
@@ -37,16 +25,20 @@ int isPerfect(int num)
     return sum == num;
 }
 
-// Function to print perfect numbers in a given range
-void printPerfectNumbers(int start, int end) {
-    for (int i = start; i <= end; i++) {
-        if (isPerfect(i)) {
+// this function prints perfect numbers in the given range
+void printPerfectNumbers(int start, int end)
+{
+    for (int i = start; i <= end; i++)
+    {
+        if (isPerfect(i))
+        {
             printf("%d\n", i);
         }
     }
 }
 
-int main() {
+int main()
+{
     int start, end;
 
     // Input for the range
