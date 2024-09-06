@@ -4,4 +4,3 @@ add:
 	git push
 gcc:
 	gcc -o $(file) $(file).c
-	./$(file)
