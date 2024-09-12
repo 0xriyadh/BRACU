@@ -13,11 +13,27 @@ int main()
     pipe(fd); // defining pipe for interprocess communication
 
     a = fork();
-    printf("a is %d and forked by %d\n", a, getpid());
+    // printf("a is %d and forked by %d\n", a, getpid());
     b = fork();
-    printf("b is %d and forked by %d\n", b, getpid());
+    // printf("b is %d and forked by %d\n", b, getpid());
     c = fork();
-    printf("c is %d and forked by %d\n", c, getpid());
+    // printf("c is %d and forked by %d\n", c, getpid());
+
+    // when a has created b and c, it should wait for b and c to finish
+    // when b has created c, it should wait for c to finish
+    // when c has not created any process, it should finish its execution
+    if (a == 0 && (b > 0 && c > 0))
+    {
+        waitpid(b, NULL, 0);
+        waitpid(c, NULL, 0);
+    }
+    else if (b == 0 && c > 0)
+    {
+        waitpid(c, NULL, 0);
+    }
+
+    // printing all the PIDs
+    printf("a: %d, b: %d, c: %d, from parent: %d\n", a, b, c, getpid());
 
     if (a > 0 && b > 0 && c > 0)
     {
