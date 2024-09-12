@@ -6,9 +6,10 @@
 int main()
 {
     // the main PID
-    printf("Main PID: %d\n", getpid());
+    // printf("Main PID: %d\n", getpid());
+
     pid_t a, b, c;
-    int x = 0;
+    int pipe_msg = 0;
     int fd[2];
     pipe(fd); // defining pipe for interprocess communication
 
@@ -19,9 +20,6 @@ int main()
     c = fork();
     // printf("c is %d and forked by %d\n", c, getpid());
 
-    // when a has created b and c, it should wait for b and c to finish
-    // when b has created c, it should wait for c to finish
-    // when c has not created any process, it should finish its execution
     if (a == 0 && (b > 0 && c > 0))
     {
         waitpid(b, NULL, 0);
@@ -33,7 +31,7 @@ int main()
     }
 
     // printing all the PIDs
-    printf("a: %d, b: %d, c: %d, from parent: %d\n", a, b, c, getpid());
+    // printf("a: %d, b: %d, c: %d, from parent: %d\n", a, b, c, getpid());
 
     if (a > 0 && b > 0 && c > 0)
     {
@@ -44,37 +42,37 @@ int main()
 
         close(fd[1]);
 
-        int i = 1;
+        int total_processes = 1;
 
-        while (read(fd[0], &x, sizeof(int)) != 0)
+        while (read(fd[0], &pipe_msg, sizeof(int)) != 0)
         {
-            i++;
+            total_processes++;
         }
-        printf("Total processes: %d\n", i);
+        printf("Total processes: %d\n", total_processes);
         close(fd[0]);
     }
     else
     {
 
-        printf("In child %d parent %d\n", getpid(), getppid());
-        write(fd[1], &x, sizeof(int));
-        pid_t gc = -1;
+        printf("I am child %d my parent is %d\n", getpid(), getppid());
+        write(fd[1], &pipe_msg, sizeof(int));
+        pid_t grand_child = -1;
 
         if (getpid() % 2)
         {
-            gc = fork();
-            if (gc == 0)
+            grand_child = fork();
+            if (grand_child == 0)
             {
-                write(fd[1], &x, sizeof(int));
+                write(fd[1], &pipe_msg, sizeof(int));
                 printf("Inside fork %d my parent %d\n", getpid(), getppid());
                 return 0;
             }
         }
 
         // waiting for grand child process to finish its execution
-        if (gc != -1)
+        if (grand_child != -1)
         {
-            waitpid(gc, NULL, 0);
+            waitpid(grand_child, NULL, 0);
         }
 
         return 0;
