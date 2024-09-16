@@ -205,7 +205,7 @@ def animate():
                 glColor3f(0.8, 0.3, 1)
                 drawCircle(x, y, r)
                 if not pause:
-                    bullets[i][1] += 3
+                    bullets[i][1] += 1
                 if bullets[i][1] > 500:
                     bullets.pop(i)
                     bullet_miss_count += 1
