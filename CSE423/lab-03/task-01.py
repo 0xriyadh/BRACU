@@ -2,6 +2,7 @@ import random
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
+import math
 
 W_Width, W_Height = 500, 500
 pause = False
@@ -18,6 +19,8 @@ bullets = []
 circle_miss_count = 0
 bullet_miss_count = 0
 shooter_position = 250
+shooter_radius = 20
+shooter_y = 30
 
 def drawPixel(x, y):
     glPointSize(2)
@@ -140,21 +143,15 @@ def drawCircle(x0, y0, radius):
             d += 2 * (y - x) + 1
 
 def shooter(x):
-    global gameOver
+    global gameOver, shooter_radius, shooter_y
     if not gameOver:
         glColor3f(1, 1, 1)
     else:
         glColor3f(1, 0, 0)
-    drawCircle(x, 30, 20)
-
-# AABB Collision Detection algorithm
-def hasCollided(x1, y1, x2, y2):
-    if x1 < x2 + 100 and x1 + 100 > x2 and y1 < (y2 + 15) and (y1 + 40) > y2:
-        return True
-    return False
+    drawCircle(x, shooter_y, shooter_radius)
 
 def mouseListener(button, state, x, y):
-    global speed, pause, gameOver, showDiamond, diamondInfo, score, catcher_position, catcher_pause
+    global speed, pause, gameOver, score, circles, bullets, bullet_miss_count, circle_miss_count, shooter_position
 
     if button==GLUT_LEFT_BUTTON:
         if state==GLUT_DOWN:
@@ -169,19 +166,21 @@ def mouseListener(button, state, x, y):
                 print("Paused/Resumed")
                 if pause == False:
                     pause = True
-                    catcher_pause = True
                 else:
                     pause = False
-                    catcher_pause = False
                 
             #restart
             elif 5<x<45 and 455<(500-y)<495:
                 print("Starting over!")
-                showDiamond=False
-                diamondInfo=None
                 gameOver=False
                 score=0
-                catcher_position=200
+                shooter_position = 250
+                circles = []
+                bullets = []
+                bullet_miss_count = 0
+                circle_miss_count = 0
+                pause = False
+
     glutPostRedisplay()
 
 def specialKeyListener(key, a, b): 
@@ -197,7 +196,7 @@ def animate():
                 r, x, y = bullets[i]
                 glColor3f(0.8, 0.3, 1)
                 drawCircle(x, y, r)
-                if pause == False:
+                if not pause:
                     bullets[i][1] += 3
                 if bullets[i][1] > 500:
                     bullets.pop(i)
@@ -216,7 +215,8 @@ def animate():
                 x, y, r = circles[i]
                 glColor3f(0.8, 1, 0.3)
                 drawCircle(x, y, r)
-                circles[i][1] -= speed
+                if not pause:
+                    circles[i][1] -= speed
                 if circles[i][1] < 0:
                     circles.pop(i)
                     circle_miss_count += 1
@@ -231,7 +231,7 @@ def animate():
     glutPostRedisplay() 
 
 def display():
-    global shooter_position, gameOver, pause
+    global shooter_position, gameOver, pause, shooter_y, shooter_radius, score, circles, bullets
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)  # clear the display
     glClearColor(0, 0, 0, 0)
@@ -262,24 +262,31 @@ def display():
 
     if not gameOver:
         if len(circles) == 0:
-            circles.append([random.randint(31, 470), 500, 30])
+            circles.append([random.randint(35, 465), 500, 30])
         elif circles[-1][1] < 400:
-            circles.append([random.randint(31, 470), 500, 30])
+            circles.append([random.randint(35, 465), 500, 30])
 
         vanishing_circles = []
         vanishing_bullets = []
 
+        # collision detection between circles and bullets
         for i in range(len(circles)):
             x_circle, y_circle, r_circle = circles[i]
             for j in range(len(bullets)):
                 r_bullet, x_bullet, y_bullet = bullets[j]
-                if (x_bullet - x_circle)**2 + (y_bullet - y_circle)**2 <= (r_bullet + r_circle)**2:
+                distance = math.sqrt((x_bullet - x_circle) ** 2 + (y_bullet - y_circle) ** 2)
+                if distance <= (r_bullet + r_circle):
+                    score += 1
+                    print("Score:", score)
                     vanishing_circles.append(i)
                     vanishing_bullets.append(j)
-                    score += 1
-                    print(f"Score: {score}")
-                    break
-
+        
+            # collision detection between circles and shooter
+            distance = math.sqrt((shooter_position - x_circle) ** 2 + (shooter_y - y_circle) ** 2)
+            if distance <= (shooter_radius + r_circle):
+                print(f"Oh NO, Crashed!!! \nGame Over! Score: {score}")
+                gameOver = True
+                break
 
 
     shooter(shooter_position)
