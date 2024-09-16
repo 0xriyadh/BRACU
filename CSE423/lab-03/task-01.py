@@ -183,7 +183,19 @@ def mouseListener(button, state, x, y):
 
     glutPostRedisplay()
 
-def specialKeyListener(key, a, b): 
+def keyboardListener(key, a, b): 
+    global gameOver, pause, shooter_position, bullets
+    
+    if not gameOver and not pause:
+        if key==b'a':
+            if shooter_position > 28:
+                shooter_position -= 10
+        if key==b'd':
+            if shooter_position < 472:
+                shooter_position += 10
+        if key==b' ':
+            bullets.append([shooter_position, shooter_y, 7])
+
     glutPostRedisplay()
 
 def animate():
@@ -193,7 +205,7 @@ def animate():
         if len(bullets) > 0:
             i = 0
             while i < (len(bullets)):
-                r, x, y = bullets[i]
+                x, y, r = bullets[i]
                 glColor3f(0.8, 0.3, 1)
                 drawCircle(x, y, r)
                 if not pause:
@@ -273,9 +285,10 @@ def display():
         for i in range(len(circles)):
             x_circle, y_circle, r_circle = circles[i]
             for j in range(len(bullets)):
-                r_bullet, x_bullet, y_bullet = bullets[j]
+                x_bullet, y_bullet, r_bullet = bullets[j]
                 distance = math.sqrt((x_bullet - x_circle) ** 2 + (y_bullet - y_circle) ** 2)
                 if distance <= (r_bullet + r_circle):
+                    print("Hit!")
                     score += 1
                     print("Score:", score)
                     vanishing_circles.append(i)
@@ -287,6 +300,12 @@ def display():
                 print(f"Oh NO, Crashed!!! \nGame Over! Score: {score}")
                 gameOver = True
                 break
+
+        for i in vanishing_circles:
+            circles.pop(i)
+
+        for i in vanishing_bullets:
+            bullets.pop(i)
 
 
     shooter(shooter_position)
@@ -310,6 +329,6 @@ glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGB)
 wind = glutCreateWindow(b"Shoot The Circles")
 init()
 glutDisplayFunc(display)
-glutSpecialFunc(specialKeyListener)
+glutKeyboardFunc(keyboardListener)
 glutMouseFunc(mouseListener)
 glutMainLoop()
