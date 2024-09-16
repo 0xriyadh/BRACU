@@ -7,12 +7,7 @@ import math
 W_Width, W_Height = 500, 500
 pause = False
 gameOver = False
-showDiamond = False
-diamondInfo = None
 speed = 0.4
-catcher_position = 200
-catcher_pause = False
-catcher_speed = 15
 score = 0
 circles = []
 bullets = []
@@ -163,15 +158,16 @@ def mouseListener(button, state, x, y):
 
             # pause button
             elif 230<x<270 and 450<(500-y)<490:
-                print("Paused/Resumed")
                 if pause == False:
+                    print("Game Paused!")
                     pause = True
                 else:
+                    print("Game Resumed!")
                     pause = False
                 
             #restart
             elif 5<x<45 and 455<(500-y)<495:
-                print("Starting over!")
+                print("Game Restarted!")
                 gameOver=False
                 score=0
                 shooter_position = 250
@@ -247,8 +243,6 @@ def display():
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)  # clear the display
     glClearColor(0, 0, 0, 0)
-    
-    # drawCircle(50, 50, 10)
 
     # restart button
     glColor3f(0.2,0.8,0.9)
@@ -313,13 +307,7 @@ def display():
     glutSwapBuffers()
 
 def init():
-    # clear the screen
     glClearColor(0, 0, 0, 0)
-    # # load the PROJECTION matrix 
-    # glMatrixMode(GL_PROJECTION)
-    # # initialize the matrix
-    # glLoadIdentity()
-    # gluPerspective(104,	1,	1,	1000.0)
     glOrtho(0, 500, 0, 500, 0, 1)
 
 glutInit()
