@@ -226,7 +226,7 @@ def display():
     drawLine(450, 490, 490, 450)
     drawLine(450, 450, 490, 490)
 
-    global gameOver, diamondInfo, showDiamond, score, catcher_position, speed, score
+    global gameOver, diamondInfo, showDiamond, score, catcher_position, speed, score, catcher_speed
 
     if not gameOver:
         if not showDiamond:
