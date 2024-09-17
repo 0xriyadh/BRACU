@@ -11,7 +11,6 @@ diamondInfo = None
 speed = 0.4
 catcher_position = 200
 catcher_pause = False
-catcher_speed = 15
 score = 0
 
 def drawPixel(x, y):
@@ -177,14 +176,14 @@ def mouseListener(button, state, x, y):
     glutPostRedisplay()
 
 def specialKeyListener(key, a, b):
-    global catcher_position, gameOver, catcher_pause, catcher_speed
+    global catcher_position, gameOver, catcher_pause
     if not gameOver and not catcher_pause:
         if key==GLUT_KEY_RIGHT:
-            if catcher_position < 400:
-                catcher_position+=catcher_speed
+            if catcher_position < 390:
+                catcher_position+=15
         if key==GLUT_KEY_LEFT:
-            if catcher_position > 0:
-                catcher_position-=catcher_speed
+            if catcher_position > 10:
+                catcher_position-=15
     glutPostRedisplay()
 
 def animate():
@@ -226,7 +225,7 @@ def display():
     drawLine(450, 490, 490, 450)
     drawLine(450, 450, 490, 490)
 
-    global gameOver, diamondInfo, showDiamond, score, catcher_position, speed, score, catcher_speed
+    global gameOver, diamondInfo, showDiamond, score, catcher_position, speed, score
 
     if not gameOver:
         if not showDiamond:
@@ -246,7 +245,6 @@ def display():
                 diamondInfo = None
                 print("Score:", score)
                 speed *= 1.2
-                catcher_speed *= 1.2
             elif y1 <= y2:
                 gameOver = True
                 print(f"Game over! Score: {score}")
@@ -254,7 +252,6 @@ def display():
                 showDiamond = False
                 diamondInfo = None
                 speed = 0.4
-                catcher_speed = 15
 
     animate()
     drawCatcher(catcher_position)
