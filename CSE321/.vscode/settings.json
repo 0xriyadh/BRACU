@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "math.h": "c",
-        "mman.h": "c"
+        "mman.h": "c",
+        "semaphore.h": "c"
     }
 }
