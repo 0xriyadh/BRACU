@@ -1,7 +1,9 @@
 %option noyywrap
 
 %{
-#include<bits/stdc++.h>
+#include <iostream>
+#include <fstream>
+#include <string>
 using namespace std;
 
 ofstream yyoutlog; //output filestream for log file
@@ -18,45 +20,105 @@ int lines = 1;
 delim	 [ \t\v\r]
 
 /* write regular expressions for whitespace and newline */
-ws		 
+ws 	 {delim}+
 
-newline  
+newline  \n
 
 letter_	 [A-Za-z_]
 digit	 [0-9]
 
 /* write regular expressions for id, float and integers */
-id		 
+
+id {letter_}({letter_}|{digit})*
+float {digit}+"."{digit}+
+int {digit}+
 
 
 %%
 
 {ws} { /* ignore whitespace */ }
 
-{newline} {
-			/* do necessary bookkeeping (line number tracking etc.) */
-		}
-
-{id} {
-			loglist="Line no "+to_string(lines)+": Token <ID> Lexeme "+yytext+" found"+"\n"+"\n";
-			yyoutlog<<loglist;
-		}
+{newline} {lines++;}
 
 if {
 			loglist="Line no "+to_string(lines)+": Token <IF> Lexeme "+yytext+" found"+"\n"+"\n";
 			yyoutlog<<loglist;
 		}
 
+else {
+			loglist="Line no "+to_string(lines)+": Token <ELSE> Lexeme "+yytext+" found"+"\n"+"\n";
+			yyoutlog<<loglist;
+}
+
+for {
+			loglist="Line no "+to_string(lines)+": Token <FOR> Lexeme "+yytext+" found"+"\n"+"\n";
+			yyoutlog<<loglist;
+}
+
 while {
 			loglist="Line no "+to_string(lines)+": Token <WHILE> Lexeme "+yytext+" found"+"\n"+"\n";
 			yyoutlog<<loglist;
 		}
+
+do {
+			loglist="Line no "+to_string(lines)+": Token <DO> Lexeme "+yytext+" found"+"\n"+"\n";
+			yyoutlog<<loglist;
+}
+
+int {
+			loglist="Line no "+to_string(lines)+": Token <INT> Lexeme "+yytext+" found"+"\n"+"\n";
+			yyoutlog<<loglist;
+}
+
+{int} {
+			loglist="Line no "+to_string(lines)+": Token <CONST_INT> Lexeme "+yytext+" found"+"\n"+"\n";
+			yyoutlog<<loglist;
+}
+
+{float} {
+			loglist="Line no "+to_string(lines)+": Token <FLOAT> Lexeme "+yytext+" found"+"\n"+"\n";
+			yyoutlog<<loglist;
+}
+
+void {
+			loglist="Line no "+to_string(lines)+": Token <VOID> Lexeme "+yytext+" found"+"\n"+"\n";
+			yyoutlog<<loglist;
+}
+
+switch {
+			loglist="Line no "+to_string(lines)+": Token <SWITCH> Lexeme "+yytext+" found"+"\n"+"\n";
+			yyoutlog<<loglist;
+}
+
+default {
+			loglist="Line no "+to_string(lines)+": Token <DEFAULT> Lexeme "+yytext+" found"+"\n"+"\n";
+			yyoutlog<<loglist;
+}
+
+goto {
+			loglist="Line no "+to_string(lines)+": Token <GOTO> Lexeme "+yytext+" found"+"\n"+"\n";
+			yyoutlog<<loglist;
+}
+
+break {
+			loglist="Line no "+to_string(lines)+": Token <BREAK> Lexeme "+yytext+" found"+"\n"+"\n";
+			yyoutlog<<loglist;
+}
+
+char {
+			loglist="Line no "+to_string(lines)+": Token <CHAR> Lexeme "+yytext+" found"+"\n"+"\n";
+			yyoutlog<<loglist;
+}
+
+
 
 
 "+"|"-" { /* to match two same operators use | */
 			loglist="Line no "+to_string(lines)+": Token <ADDOP> Lexeme "+yytext+" found"+"\n"+"\n";
 			yyoutlog<<loglist;
 		}
+
+
 
 
 %%
