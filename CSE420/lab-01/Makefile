@@ -5,6 +5,6 @@ add:
 
 flex:
 	flex lexAnalyzer.l
-	g++ lex.yy.c -o lexAnalyzerExe
-	./lexAnalyzerExe input.txt
+	g++ lex.yy.c -o out
+	./out input.txt
 	cat my_log.txt
