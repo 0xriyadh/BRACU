@@ -1,4 +1,7 @@
-#include<bits/stdc++.h>
+#include <iostream>
+#include <string>
+#include <fstream>
+
 using namespace std;
 
 class symbol_info
