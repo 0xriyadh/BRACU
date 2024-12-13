@@ -19,7 +19,7 @@ int lines;
 
 %}
 
-%token IF ELSE FOR WHILE DO BREAK CONTINUE RETURN INT FLOAT CHAR VOID DOUBLE SWITCH CASE DEFAULT PRINTLN ADDOP MULOP INCOP DECOP RELOP ASSIGNOP LOGICOP NOT LPAREN RPAREN LCURL RCURL LTHIRD RTHIRD SEMICOLON COMMA ID CONST_INT CONST_FLOAT
+%token IF ELSE SWITCH CASE DEFAULT FOR WHILE DO BREAK CONTINUE RETURN PRINTLN NOT LPAREN RPAREN LCURL RCURL LTHIRD RTHIRD INT FLOAT CHAR VOID DOUBLE SEMICOLON COMMA ID CONST_INT CONST_FLOAT ADDOP MULOP INCOP DECOP RELOP ASSIGNOP LOGICOP
 %nonassoc IF
 %nonassoc ELSE
 
@@ -82,6 +82,22 @@ func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statem
 	}
 ;
 
+compound_statement : LCURL statements RCURL
+	{
+		outlog<<"At line no: "<<lines+1<<" compound_statement : LCURL statements RCURL "<<endl<<endl;
+		outlog<<"{\n"<<$2->getname()<<"\n}"<<endl<<endl;
+		
+		$$ = new symbol_info("{\n"+$2->getname()+"\n}","compound_stmnt");
+	}
+	| LCURL RCURL
+	{
+		outlog<<"At line no: "<<lines+1<<" compound_statement : LCURL RCURL "<<endl<<endl;
+		outlog<<"{\n}"<<endl<<endl;
+		
+		$$ = new symbol_info("{\n}","compound_stmnt");
+	}
+;
+
 parameter_list : parameter_list COMMA type_specifier ID
 	{
 		outlog<<"At line no: "<<lines+1<<" parameter_list : parameter_list COMMA type_specifier ID "<<endl<<endl;
@@ -113,31 +129,6 @@ parameter_list : parameter_list COMMA type_specifier ID
 	}
 ;
 
-compound_statement : LCURL statements RCURL
-	{
-		outlog<<"At line no: "<<lines+1<<" compound_statement : LCURL statements RCURL "<<endl<<endl;
-		outlog<<"{\n"<<$2->getname()<<"\n}"<<endl<<endl;
-		
-		$$ = new symbol_info("{\n"+$2->getname()+"\n}","compound_stmnt");
-	}
-	| LCURL RCURL
-	{
-		outlog<<"At line no: "<<lines+1<<" compound_statement : LCURL RCURL "<<endl<<endl;
-		outlog<<"{\n}"<<endl<<endl;
-		
-		$$ = new symbol_info("{\n}","compound_stmnt");
-	}
-;
-
-var_declaration : type_specifier declaration_list SEMICOLON
-	{
-		outlog<<"At line no: "<<lines+1<<" var_declaration : type_specifier declaration_list SEMICOLON "<<endl<<endl;
-		outlog<<$1->getname()<<" "<<$2->getname()<<";"<<endl<<endl;
-		
-		$$ = new symbol_info($1->getname()+" "+$2->getname()+";","var_decl");
-	}
-;
-
 type_specifier : INT
 	{
 		outlog<<"At line no: "<<lines+1<<" type_specifier : INT "<<endl<<endl;
@@ -158,6 +149,15 @@ type_specifier : INT
 		outlog<<"void"<<endl<<endl;
 		
 		$$ = new symbol_info("void","type_spec");
+	}
+;
+
+var_declaration : type_specifier declaration_list SEMICOLON
+	{
+		outlog<<"At line no: "<<lines+1<<" var_declaration : type_specifier declaration_list SEMICOLON "<<endl<<endl;
+		outlog<<$1->getname()<<" "<<$2->getname()<<";"<<endl<<endl;
+		
+		$$ = new symbol_info($1->getname()+" "+$2->getname()+";","var_decl");
 	}
 ;
 
@@ -269,22 +269,6 @@ statement : var_declaration
 		outlog<<"return "<<$2->getname()<<";"<<endl<<endl;
 		
 		$$ = new symbol_info("return "+$2->getname()+";","stmnt");
-	}
-;
-
-expression_statement : SEMICOLON
-	{
-		outlog<<"At line no: "<<lines+1<<" expression_statement : SEMICOLON "<<endl<<endl;
-		outlog<<";"<<endl<<endl;
-		
-		$$ = new symbol_info(";","expr_stmnt");
-	}
-	| expression SEMICOLON
-	{
-		outlog<<"At line no: "<<lines+1<<" expression_statement : expression SEMICOLON "<<endl<<endl;
-		outlog<<$1->getname()<<";"<<endl<<endl;
-		
-		$$ = new symbol_info($1->getname()+";","expr_stmnt");
 	}
 ;
 
@@ -407,6 +391,22 @@ unary_expression : ADDOP unary_expression
 	}
 ;
 
+expression_statement : SEMICOLON
+	{
+		outlog<<"At line no: "<<lines+1<<" expression_statement : SEMICOLON "<<endl<<endl;
+		outlog<<";"<<endl<<endl;
+		
+		$$ = new symbol_info(";","expr_stmnt");
+	}
+	| expression SEMICOLON
+	{
+		outlog<<"At line no: "<<lines+1<<" expression_statement : expression SEMICOLON "<<endl<<endl;
+		outlog<<$1->getname()<<";"<<endl<<endl;
+		
+		$$ = new symbol_info($1->getname()+";","expr_stmnt");
+	}
+;
+
 factor : variable
 	{
 		outlog<<"At line no: "<<lines+1<<" factor : variable "<<endl<<endl;
@@ -499,7 +499,7 @@ int main(int argc, char *argv[])
 	if(argc != 2) 
 	{
         // check if filename given
-		cout<<"Please input file name"<<endl;
+		cout<<"Please provide a file name"<<endl;
 		return 0;
 	}
 	yyin = fopen(argv[1], "r");
