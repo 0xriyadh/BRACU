@@ -12,11 +12,7 @@ extern YYSTYPE yylval;
 
 void yyerror(char *);
 
-string loglist;
-
 extern int lines;
-
-extern ofstream outlog;
 
 %}
 
