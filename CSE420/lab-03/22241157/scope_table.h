@@ -119,50 +119,49 @@ public:
 
     void print_scope_table(ofstream &outlog)
     {
-        outlog << "ScopeTable # " << unique_id << endl;
-
-        // Print non-empty buckets
+        outlog << endl
+               << "ScopeTable # " << unique_id << endl;
         for (int i = 0; i < bucket_count; i++)
         {
             if (!table[i].empty())
             {
-                for (symbol_info *symbol : table[i])
+                outlog << i << " --> " << endl;
+                bool first = true;
+                for (auto current : table[i])
                 {
-                    outlog << i << " --> " << endl;
-                    outlog << "< " << symbol->getname() << " : ID >" << endl;
-                    if (symbol->get_is_function())
+                    if (!first)
+                        outlog << endl;
+                    outlog << "< " << current->getname() << " : " << current->gettype() << " >" << endl;
+                    if (current->get_is_function())
                     {
                         outlog << "Function Definition" << endl;
-                        outlog << "Return Type: " << symbol->get_return_type() << endl;
-                        auto params = symbol->get_parameters();
+                        outlog << "Return Type: " << current->get_return_type() << endl;
+                        vector<pair<string, string> > params = current->get_parameters();
                         outlog << "Number of Parameters: " << params.size() << endl;
                         outlog << "Parameter Details: ";
-                        for (size_t j = 0; j < params.size(); j++)
+                        for (int j = 0; j < params.size(); j++)
                         {
-                            if (j > 0)
+                            outlog << params[j].first << " " << params[j].second;
+                            if (j < params.size() - 1)
                                 outlog << ", ";
-                            if (!params[j].second.empty())
-                                outlog << params[j].first << " " << params[j].second;
-                            else
-                                outlog << params[j].first;
                         }
-                        outlog << endl
-                               << endl;
+                        outlog << endl;
                     }
-                    else if (symbol->get_is_array())
+                    else if (current->get_is_array())
                     {
                         outlog << "Array" << endl;
-                        outlog << "Type: " << symbol->get_data_type() << endl;
-                        outlog << "Size: " << symbol->get_array_size() << endl
-                               << endl;
+                        outlog << "Type: " << current->get_data_type() << endl;
+                        outlog << "Size: " << current->get_array_size() << endl;
                     }
                     else
                     {
                         outlog << "Variable" << endl;
-                        outlog << "Type: " << symbol->get_data_type() << endl
-                               << endl;
+                        outlog << "Type: " << current->get_data_type() << endl;
                     }
+                    first = false;
                 }
+                outlog << endl
+                       << endl;
             }
         }
     }

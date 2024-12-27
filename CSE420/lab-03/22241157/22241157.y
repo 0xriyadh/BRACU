@@ -95,9 +95,8 @@ func_definition : type_specifier ID LPAREN parameter_list RPAREN {
 				symbol_info* func = new symbol_info($2->getname(), "ID", $1->getname());
 				func->set_as_function($1->getname(), params);
 				table->insert(func);
-			} else {
-				yyerror(("Multiple declaration of " + $2->getname()).c_str());
 			}
+			// Silently ignore multiple declarations
 		} compound_statement
 		{	
 			outlog << "At line no: " << lines << " func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statement " << endl << endl;
@@ -115,9 +114,8 @@ func_definition : type_specifier ID LPAREN parameter_list RPAREN {
 				symbol_info* func = new symbol_info($2->getname(), "ID", $1->getname());
 				func->set_as_function($1->getname(), params);
 				table->insert(func);
-			} else {
-				yyerror(("Multiple declaration of " + $2->getname()).c_str());
 			}
+			// Silently ignore multiple declarations
 		} compound_statement
 		{
 			outlog << "At line no: " << lines << " func_definition : type_specifier ID LPAREN RPAREN compound_statement " << endl << endl;
@@ -268,11 +266,13 @@ declaration_list : declaration_list COMMA ID
 
             // Check if variable already declared in current scope
             if(is_variable_declared_current_scope($3->getname())) {
-                yyerror(("Multiple declaration of " + $3->getname()).c_str());
+                // Silently ignore multiple declarations
+                $$ = new symbol_info($1->getname() + "," + $3->getname(), "decl_list");
             } else {
                 // Create and insert new variable
                 symbol_info* new_var = new symbol_info($3->getname(), "ID", current_type);
                 table->insert(new_var);
+                $$ = new symbol_info($1->getname() + "," + $3->getname(), "decl_list");
             }
  		  }
  		  | declaration_list COMMA ID LTHIRD CONST_INT RTHIRD //array after some declaration
@@ -283,12 +283,14 @@ declaration_list : declaration_list COMMA ID
 
             // Check if array already declared in current scope
             if(is_variable_declared_current_scope($3->getname())) {
-                yyerror(("Multiple declaration of " + $3->getname()).c_str());
+                // Silently ignore multiple declarations
+                $$ = new symbol_info($1->getname() + "," + $3->getname() + "[" + $5->getname() + "]", "decl_list");
             } else {
                 // Create and insert new array
                 int size = stoi($5->getname());
                 symbol_info* new_array = new symbol_info($3->getname(), "ID", current_type, size);
                 table->insert(new_array);
+                $$ = new symbol_info($1->getname() + "," + $3->getname() + "[" + $5->getname() + "]", "decl_list");
             }
  		  }
  		  |ID
@@ -299,11 +301,13 @@ declaration_list : declaration_list COMMA ID
 
             // Check if variable already declared in current scope
             if(is_variable_declared_current_scope($1->getname())) {
-                yyerror(("Multiple declaration of " + $1->getname()).c_str());
+                // Silently ignore multiple declarations
+                $$ = new symbol_info($1->getname(), "decl_list");
             } else {
                 // Create and insert new variable
                 symbol_info* new_var = new symbol_info($1->getname(), "ID", current_type);
                 table->insert(new_var);
+                $$ = new symbol_info($1->getname(), "decl_list");
             }
  		  }
  		  | ID LTHIRD CONST_INT RTHIRD //array
@@ -314,12 +318,14 @@ declaration_list : declaration_list COMMA ID
 
             // Check if array already declared in current scope
             if(is_variable_declared_current_scope($1->getname())) {
-                yyerror(("Multiple declaration of " + $1->getname()).c_str());
+                // Silently ignore multiple declarations
+                $$ = new symbol_info($1->getname() + "[" + $3->getname() + "]", "decl_list");
             } else {
                 // Create and insert new array
                 int size = stoi($3->getname());
                 symbol_info* new_array = new symbol_info($1->getname(), "ID", current_type, size);
                 table->insert(new_array);
+                $$ = new symbol_info($1->getname() + "[" + $3->getname() + "]", "decl_list");
             }
  		  }
  		  ;

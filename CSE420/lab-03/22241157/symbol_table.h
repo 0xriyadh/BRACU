@@ -79,14 +79,12 @@ public:
                    << "################################" << endl
                    << endl;
 
-            // Print current scope
-            current_scope->print_scope_table(outlog);
-
-            // Print parent scope if exists
-            if (current_scope->get_parent_scope() != NULL)
+            // Print all scopes from current to root
+            scope_table *temp = current_scope;
+            while (temp != NULL)
             {
-                outlog << endl;
-                current_scope->get_parent_scope()->print_scope_table(outlog);
+                temp->print_scope_table(outlog);
+                temp = temp->get_parent_scope();
             }
 
             outlog << "################################" << endl
@@ -100,14 +98,15 @@ public:
                << endl;
         outlog << "################################" << endl
                << endl;
+
+        // Print all scopes from current to root
         scope_table *temp = current_scope;
         while (temp != NULL)
         {
             temp->print_scope_table(outlog);
-            if (temp->get_parent_scope() != NULL)
-                outlog << endl;
             temp = temp->get_parent_scope();
         }
+
         outlog << "################################" << endl;
     }
 
@@ -121,6 +120,14 @@ public:
     bool is_global_scope()
     {
         return current_scope != NULL && current_scope->get_parent_scope() == NULL;
+    }
+
+    // Add lookup_current_scope method
+    symbol_info *lookup_current_scope(symbol_info *symbol)
+    {
+        if (current_scope == NULL)
+            return NULL;
+        return current_scope->lookup_in_scope(symbol);
     }
 };
 
