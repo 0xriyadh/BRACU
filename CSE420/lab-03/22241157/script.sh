@@ -13,4 +13,4 @@ g++ y.o l.o
 echo 'All ready, running'
 ./a.out input.c
 echo 'generated_log'
-cat generated_log.txt
+cat 22241157_log.txt
