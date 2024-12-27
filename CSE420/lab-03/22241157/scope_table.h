@@ -119,18 +119,14 @@ public:
 
     void print_scope_table(ofstream &outlog)
     {
-        outlog << endl
-               << "ScopeTable # " << unique_id << endl;
+        outlog << "ScopeTable # " << unique_id << endl;
         for (int i = 0; i < bucket_count; i++)
         {
             if (!table[i].empty())
             {
-                outlog << i << " --> " << endl;
-                bool first = true;
+                outlog << i << " --> ";
                 for (auto current : table[i])
                 {
-                    if (!first)
-                        outlog << endl;
                     outlog << "< " << current->getname() << " : " << current->gettype() << " >" << endl;
                     if (current->get_is_function())
                     {
@@ -158,11 +154,9 @@ public:
                         outlog << "Variable" << endl;
                         outlog << "Type: " << current->get_data_type() << endl;
                     }
-                    first = false;
                 }
-                outlog << endl
-                       << endl;
             }
         }
+        outlog << endl;
     }
 };

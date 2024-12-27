@@ -39,7 +39,7 @@ bool is_function_declared(string name) {
 // Helper function to check if a variable is already declared in current scope
 bool is_variable_declared_current_scope(string name) {
     symbol_info* temp = new symbol_info(name, "ID");
-    symbol_info* found = table->lookup(temp);
+    symbol_info* found = table->lookup_current_scope(temp);
     delete temp;
     return found != NULL;
 }
