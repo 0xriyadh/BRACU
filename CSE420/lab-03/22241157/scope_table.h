@@ -124,7 +124,7 @@ public:
         {
             if (!table[i].empty())
             {
-                outlog << i << " --> ";
+                outlog << i << " --> " << endl;
                 for (auto current : table[i])
                 {
                     outlog << "< " << current->getname() << " : " << current->gettype() << " >" << endl;

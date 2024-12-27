@@ -1,24 +1,36 @@
-int func() {
+int func(int a, int b) {
+    return a + b;
+}
 
-    int a;
+int func2(float a, int b) {
+    return a - b;
+}
 
-    if (a>1){
-        float a;
+int main () {
+    int a, b, c, i;
+    int e, f[10], g[11];
+    a = 1;
+    b = 2;
+    c = func(a, b);
 
-        if (a>1) {
-            int a;
+    float d;
 
-             if (a>1) {
-                float a;
-
-                if (a>1) {
-                    int a;
-
-                    if (a>1) {
-                        float a;
-                    }
-                }
-             }
-        }
+    for (i = 0; i < 10; i++) {
+        int a;
+        a = c + i;
+        a = c;
     }
+
+    if (c > 10) {
+        float b;
+        b = func2(1.0, 2);
+        d = b;
+    }
+
+    while (c > 0) {
+        int i;
+        c--;
+        i = c;
+    }
+    return c;
 }
